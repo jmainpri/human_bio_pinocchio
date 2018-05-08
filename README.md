@@ -1,4 +1,4 @@
-human_bio_urdf
+human_bio_pinocchio
 ==========
 
     roslaunch human_bio_urdf displayHuman.launch
