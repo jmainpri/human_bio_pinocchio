@@ -33,34 +33,39 @@ def IterativeIK:
         self.max_distance_to_target_ = None
         self.iterations_ = None
         self.configurations_ = np.array([])
-        self.conservative_joint_limit_threshold_ = None
+        self.conservative_joint_limit_threshold_ = 1e-5
         self.verbose_ = True
 
     def interpolated_configurations(self):
         return self.configurations_
 
+    # This function will return true if the configuration violates
+    # joint limits. the configuration passed as input should be only
+    # for active dofs and match in size the lower and upper argument of 
+    # of the class. A bad joint indicies list is mantained
     def check_violate_joint_limits(self, q):
         assert q.shape[0] == self.active_indices_
-        assert q.shape[0] == lower_limits_.shape[0] 
-        assert q.shape[0] == upper_limits_.shape[0]
+        assert q.shape[0] == self.lower_limits_.shape[0] 
+        assert q.shape[0] == self.upper_limits_.shape[0]
         violate_limit = False
+        theshold = self.conservative_joint_limit_threshold_
         for idx in range(self.active_indices_):
-        if (q[i] < (lower_limits_[idx] + conservative_joint_limit_threshold_) ||
-            q[i] > (upperLimit - conservative_joint_limit_threshold_))
-          # note this will never add the same joint
-          # twice, even if bClearBadJoints = false
-          badjointinds.push_back(i)
-          violate_limit = true
+        if (q[i] < (self.lower_limits_[idx] + theshold) or
+            q[i] > (self.upper_limits_[idx] - theshold)):
+            # note this will never add the same joint
+            # twice, even if bClearBadJoints = false
+            bad_joint_indices.append(i)
+            violate_limit = True
 
-          if self.verbose_: 
-            # cout << "does not respect joint limits : "
-            #     << active_joints_[i]->getName();
-            print "ith joint : ", i
-            print " , lowerLimit : ", lowerLimit
-            print " , upperLimit : ", upperLimit
-            print " , q_j : ", q[idx] 
+            if self.verbose_: 
+                # cout << "does not respect joint limits : "
+                #     << active_joints_[i]->getName();
+                print "ith joint : ", i
+                print " , lowerLimit : ", lowerLimit
+                print " , upperLimit : ", upperLimit
+                print " , q_j : ", q[idx] 
 
-  return violate_limit;
+        return violate_limit;
 
     def solve(self, x_des, q):
 
