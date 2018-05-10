@@ -37,17 +37,16 @@ def IterativeIK:
     def __init__(self):
         self.__verbose = True
         self.__jacobian_fct_ = None
-        self.__forward_kinematics_fct_ = None
+        self.__forward_kinematics_fct = None
         self.__magnitude = 0.1
         self.__active_indices = None
         self.__lower_limits_ = None
         self.__upper_limits_ = None
         self.__imits = None
-        self.__check_joint_limits_ = None
+        self.__check_joint_limits = None
         self.__sigmoid_joint_limits = None
         self.__max_nb_iterations = None
         self.__max_distance_to_target = None
-        self.__iterations_ = None
         self.__configurations = []
         self.__conservative_joint_limit_threshold = 1e-5
         self.__q_full = None
@@ -152,9 +151,10 @@ def IterativeIK:
         the function saves the intermediate configuration
         to generate a trajectory.
         """
-        violates_limits = self.check_violate_joint_limits(q)
-        if violates_limits:
-            print "Warning configuration violates joint limits"
+        if self.__check_joint_limits:
+            violates_limits = self.check_violate_joint_limits(q)
+            if violates_limits:
+                print "Warning configuration violates joint limits"
 
         has_succeeded = False
         self.__configurations = []
@@ -167,7 +167,17 @@ def IterativeIK:
             if dist < self.__max_distance_to_target:
                 has_succeeded = True
                 break
-        if 
+        if not has_succeeded:
+            print "Ik could not converge in given number of iterations"
+        if has_succeeded and self.__check_joint_limits:
+            violates_limits = self.check_violate_joint_limits(q_tmp)
+            if violates_limits:
+                has_succeeded = False
+                print "Ik succeeded but violates joint limits"
+        return has_succeeded
+        
+
+
 
 
 
