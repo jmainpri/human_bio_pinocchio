@@ -21,11 +21,9 @@ from pinocchio.utils import *
 from pinocchio.explog import exp,log
 from numpy.linalg import pinv,norm
 import pinocchio as se3
-import rospkg
+import utils
 
-rospack = rospkg.RosPack()
-human = se3.RobotWrapper(
-    rospack.get_path('human_bio_urdf') + "/urdf/human_bio.urdf")
+human = se3.RobotWrapper(utils.human_urdf_path())
 q = human.q0
 print "shape of q : ", q.shape
 print "human : ", human
