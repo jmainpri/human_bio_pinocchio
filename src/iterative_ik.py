@@ -28,15 +28,15 @@ def normalize(v):
     return v/v_norm
 
 
-def IterativeIK:
-     """ 
+class IterativeIK:
+    """ 
         This class will compute the inverse kinematics
         for a general manipulator, it relies on the foward kinematics
         function as well as the Jacobian.
     """
     def __init__(self):
         self.__verbose = True
-        self.__jacobian_fct_ = None
+        self.__jacobian_fct = None
         self.__forward_kinematics_fct = None
         self.__magnitude = 0.1
         self.__active_indices = None
@@ -55,8 +55,8 @@ def IterativeIK:
     def interpolated_configurations(self):
         return self.configurations_
 
-    def full_dof_config(self, q)
-        """ 
+    def full_dof_config(self, q):
+        """
         Returns a configuration of the full dimension
         """
         assert len(self.__active_indices) <= q.shape[0]
@@ -71,7 +71,7 @@ def IterativeIK:
         Returns the jacobian of the active dofs
         the class assumes that the underlying library 
         uses a full dof configuration model
-        """"
+        """
         J = self.__jacobian_fct_(self.full_dof_config(q))
         return J[:, self.__active_indices]
 
@@ -80,7 +80,7 @@ def IterativeIK:
         Returns the foward kinematics
         the class assumes that the underlying library 
         uses a full dof configuration model
-        """"
+        """
         x = self.__forward_kinematics_fct_(self.full_dof_config(q))
         return x
 
@@ -97,20 +97,20 @@ def IterativeIK:
         violate_limit = False
         theshold = self.__conservative_joint_limit_threshold_
         for idx in range(self.__active_indices_):
-        if (q[i] < (self.__lower_limits_[idx] + theshold) or
-            q[i] > (self.__upper_limits_[idx] - theshold)):
-            # note this will never add the same joint
-            # twice, even if bClearBadJoints = false
-            bad_joint_indices.append(i)
-            violate_limit = True
+            if(q[i] < (self.__lower_limits_[idx] + theshold) or 
+                q[i] > (self.__upper_limits_[idx] - theshold)):
+                # note this will never add the same joint
+                # twice, even if bClearBadJoints = false
+                bad_joint_indices.append(i)
+                violate_limit = True
 
-            if self.__verbose_: 
-                # cout << "does not respect joint limits : "
-                #     << active_joints_[i]->getName();
-                print "ith joint : ", i
-                print " , lower limit : ", self.__lower_limits_[idx]
-                print " , upper limit : ", self.__upper_limits_[idx]
-                print " , q_j : ", q[idx] 
+                if self.__verbose_: 
+                    # cout << "does not respect joint limits : "
+                    #     << active_joints_[i]->getName();
+                    print "ith joint : ", i
+                    print " , lower limit : ", self.__lower_limits_[idx]
+                    print " , upper limit : ", self.__upper_limits_[idx]
+                    print " , q_j : ", q[idx] 
 
         return violate_limit
 

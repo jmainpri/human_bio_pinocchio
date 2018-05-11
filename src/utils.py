@@ -1,4 +1,5 @@
 import os
+import yaml
 def human_urdf_path():
     """
     Uses rospack to file the human urdf file, if ros is not installed
@@ -19,3 +20,15 @@ def human_urdf_path():
     else:
         print "human_bio.urdf not found !!!"
         return str("")
+
+def human_config_data():
+    """
+    Loads data from config file
+    """
+    with open(os.path.dirname(os.path.realpath(__file__)) +  os.sep + 
+        "../data/human_config.yaml", 'r') as stream:
+        try:
+            data = yaml.load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
+    return data
