@@ -35,12 +35,12 @@ class TestIterativeIk:
         # Setup default translations
         q_default=np.zeros(self.human.q0.shape)
         for name, value in data['right_arm_default'].iteritems():
-            q_default[self.human.index(name)] = value
+            q_default[self.index_config(name)] = value
         self.human.q0 = q_default
 
         # active dofs indices
         self.active_dofs=[
-            self.human.index(name) for name in data["right_arm_dofs"]]
+            self.index_config(name) for name in data["right_arm_dofs"]]
 
         # dof limits
         model = self.human.model
@@ -50,10 +50,16 @@ class TestIterativeIk:
 
         # wrist index
         wrist_name = "rWristY"
-        self.wrist_index = self.human.index(wrist_name)
+        self.wrist_index = self.index_joint(wrist_name)
 
         # store trajectories
         self.trajectories = []
+
+    def index_config(self, name):
+        return self.human.model.getJointId(name) - 1
+
+    def index_joint(self, name):
+        return self.human.model.getJointId(name)
 
     def forward_kinematics(self, q_all):
         self.human.forwardKinematics(q_all)
