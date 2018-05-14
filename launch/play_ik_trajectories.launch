@@ -1,0 +1,31 @@
+<launch>
+  <arg name="gui" default="false" />
+  <arg name="output" default="screen" />
+  <arg name="model" default="" />
+  <param name="use_gui" value="false"/>
+
+
+  <!-- Robot state & model -->
+  <param name="robot_description" 
+    textfile="$(find human_bio_urdf)/urdf/human_bio.urdf"/>  
+  <rosparam command="load" 
+    file="$(find human_bio_urdf)/config/default_config.yaml"/>
+
+  <!-- State publishers TF -->
+  <node name="robot_state_publisher" 
+    pkg="robot_state_publisher" 
+    type="robot_state_publisher" 
+    output="$(arg output)"/>
+
+  <!-- Play trajectories -->
+<!--   <node pkg="human_bio_pinnochio" 
+        type="visualize_trajectories.py" 
+        name="human_bio_play_library"
+        output="$(arg output)"/> -->
+
+  <!-- RViz -->
+  <node name="rviz" pkg="rviz" type="rviz" 
+      args="-d $(find human_bio_pinocchio)/rviz/ik.rviz"/>
+
+
+</launch>
