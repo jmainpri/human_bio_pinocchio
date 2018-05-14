@@ -22,6 +22,7 @@ import utils
 import pinocchio as se3
 from pinocchio.utils import *
 from iterative_ik import *
+import os
 
 class TestIterativeIk:
 
@@ -51,9 +52,12 @@ class TestIterativeIk:
         wrist_name = "rWristY"
         self.wrist_index = self.human.index(wrist_name)
 
+        # store trajectories
+        self.trajectories = []
+
     def forward_kinematics(self, q_all):
         self.human.forwardKinematics(q_all)
-        return self.human.data.oMi[self.wrist_index].translation
+        return np.array(self.human.data.oMi[self.wrist_index].translation)
 
     def sample_q(self):
         nb_active_dofs = len(self.lower_limits)
@@ -81,7 +85,7 @@ class TestIterativeIk:
     def sample_configs(self):
         print "shape of q : ", self.human.q0.shape
         print "human : ", self.human
-        nb_configs = 20
+        nb_configs = 10
         data = [None] * nb_configs
         for i in range(nb_configs):
             # q_active=rand((len(active_dofs)))
@@ -89,9 +93,9 @@ class TestIterativeIk:
             q_all=np.copy(self.human.q0)
             q_all[self.active_dofs] = q_active
             p = self.forward_kinematics(q_all)
-            data[i] = (q_all, p)
+            data[i] = np.array([q_all, p])
             print "p_{} : {}".format(i, p.transpose())
-        return data
+        return np.array(data)
 
     def run(self, data):
         print "active dofs : ", self.active_dofs
@@ -109,19 +113,36 @@ class TestIterativeIk:
         nb_succeed=0
         for i, config in enumerate(data):
             print '******* --- IK nb. {} --- *******'.format(i)
+            iterative_ik.configurations = []
             succeeded = iterative_ik.solve(
                 self.sample_q_normal(config[0][self.active_dofs]), config[1])
+            self.trajectories.append(np.stack(iterative_ik.configurations))
             if succeeded:
                 nb_succeed += 1
         print "Total nb if success : {} over {}".format(
             nb_succeed, len(data))
         return True
 
+    def save_data_file(self, data_out):
+        # print "shape of dataset : ", data_out.shape
+        directory=os.path.abspath(os.path.dirname(__file__)) + "/data"
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        import h5py
+        f = h5py.File(directory + '/trajectories.hdf5', 'w')
+        # print data_out[:,1].shape
+        f.create_dataset("configurations", data=np.stack(data_out[:,0]))
+        f.create_dataset("points", data=np.stack(data_out[:,1]))
+        for i, t in enumerate(self.trajectories):
+            f.create_dataset("trajectories_{:04d}".format(i), 
+                data=np.stack(t))
+        f.close()
+
 
 if __name__== "__main__":
-    
     test_iterative_ik = TestIterativeIk(utils.human_urdf_path())
     data = test_iterative_ik.sample_configs()
     success = test_iterative_ik.run(data)
+    test_iterative_ik.save_data_file(data)
     print  "success : ", success
 

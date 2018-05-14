@@ -168,7 +168,6 @@ class IterativeIK:
             violates_limits = self.check_violate_joint_limits(q)
             if violates_limits:
                 print "Warning configuration violates joint limits"
-
         has_succeeded = False
         self.configurations = []
         q_tmp = np.copy(q)
@@ -176,14 +175,15 @@ class IterativeIK:
         print " - Init  dist : ", norm(x_des - x_pose)
         for it in range(self.__max_nb_iterations):
             q_tmp += self.single_step(q_tmp, x_des, x_pose)
-            self.configurations.append(q_tmp)
             x_pose = self.forward_kinematics(q_tmp)
             dist = norm(x_des - x_pose)
             if dist < self.__max_distance_to_target:
                 has_succeeded = True
-                break
             if self.verbose and it % 100 == 0:
                 print "dist : ", dist
+            self.configurations.append(self.full_dof_config(q_tmp))
+            if has_succeeded:
+                break
         print " - final dist : ", dist
         if not has_succeeded:
             print "Ik could not converge in given number of iterations"
