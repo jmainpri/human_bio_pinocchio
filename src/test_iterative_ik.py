@@ -21,6 +21,7 @@ import iterative_ik
 import utils
 import pinocchio as se3
 from pinocchio.utils import *
+from iterative_ik import *
 
 def initialize():
     # Load config files
@@ -35,20 +36,51 @@ def initialize():
 
     # Setup the active dofs indices
     active_dofs=[human.index(name) for name in data["right_arm_dofs"]]
-    return [human, active_dofs]
+    return human, active_dofs
 
+def forward_kinematics(q_all, human, wrist_index):
+    human.forwardKinematics(q_all)
+    return human.data.oMi[wrist_index].translation
 
-def sample_configs():
-    [human, active_dofs] = initialize()
+def sample_configs(human, active_dofs, wrist_name):
     print "shape of q : ", human.q0.shape
     print "human : ", human
-    for i in range(20):
+    wrist_index = human.index(wrist_name)
+    nb_configs = 20
+    data = [None] * nb_configs
+    for i in range(nb_configs):
         q_active=rand((len(active_dofs)))
-        q = human.q0
-        q[active_dofs] = q_active
-        human.forwardKinematics(q)
-        p = human.data.oMi[human.index("rWristY")].translation
+        q_all=np.copy(human.q0)
+        q_all[active_dofs] = q_active
+        p = forward_kinematics(q_all, human, wrist_index)
+        data[i] = (q_all, p)
         print "p_{} : {}".format(i, p.transpose())
+    return data
+
+def test_iterative_ik(human, active_dofs, wrist_name, data):
+    wrist_index = human.index(wrist_name)
+    print "active dofs : ", active_dofs
+    print "q_0.shape : ", human.q0.shape
+    print "wrist_index : ", wrist_index
+
+    iterative_ik=IterativeIK(
+        lambda q: human.jacobian(q, wrist_index),
+        lambda q: forward_kinematics(q, human, wrist_index),
+        active_dofs)
+    iterative_ik.q_full = np.copy(human.q0)
+    for config in data:
+        succeeded = iterative_ik.solve(
+            config[0][active_dofs], 
+            config[1])
+        if not succeeded:
+            return False
+    return True
+
 
 if __name__== "__main__":
-    sample_configs()
+    wrist_name = "rWristY"
+    human, active_dofs = initialize()
+    data = sample_configs(human, active_dofs, wrist_name)
+    success = test_iterative_ik(human, active_dofs, wrist_name, data)
+    print  "success : ", success
+
