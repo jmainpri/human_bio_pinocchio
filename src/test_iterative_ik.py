@@ -23,64 +23,105 @@ import pinocchio as se3
 from pinocchio.utils import *
 from iterative_ik import *
 
-def initialize():
-    # Load config files
-    human=se3.RobotWrapper(utils.human_urdf_path())
-    data=utils.human_config_data()
-    
-    # Setup default translations
-    q_default=np.zeros(human.q0.shape)
-    for name, value in data['right_arm_default'].iteritems():
-        q_default[human.index(name)] = value
-    human.q0 = q_default
+class TestIterativeIk:
 
-    # Setup the active dofs indices
-    active_dofs=[human.index(name) for name in data["right_arm_dofs"]]
-    return human, active_dofs
+    def __init__(self, urdf_path):
+        # Load config files
+        #  utils.human_urdf_path()
+        self.human=se3.RobotWrapper(urdf_path)
+        data=utils.human_config_data()
+        
+        # Setup default translations
+        q_default=np.zeros(self.human.q0.shape)
+        for name, value in data['right_arm_default'].iteritems():
+            q_default[self.human.index(name)] = value
+        self.human.q0 = q_default
 
-def forward_kinematics(q_all, human, wrist_index):
-    human.forwardKinematics(q_all)
-    return human.data.oMi[wrist_index].translation
+        # active dofs indices
+        self.active_dofs=[
+            self.human.index(name) for name in data["right_arm_dofs"]]
 
-def sample_configs(human, active_dofs, wrist_name):
-    print "shape of q : ", human.q0.shape
-    print "human : ", human
-    wrist_index = human.index(wrist_name)
-    nb_configs = 20
-    data = [None] * nb_configs
-    for i in range(nb_configs):
-        q_active=rand((len(active_dofs)))
-        q_all=np.copy(human.q0)
-        q_all[active_dofs] = q_active
-        p = forward_kinematics(q_all, human, wrist_index)
-        data[i] = (q_all, p)
-        print "p_{} : {}".format(i, p.transpose())
-    return data
+        # dof limits
+        model = self.human.model
+        self.lower_limits = model.lowerPositionLimit[self.active_dofs]
+        self.upper_limits = model.upperPositionLimit[self.active_dofs]
+        assert len(self.lower_limits) == len(self.upper_limits)
 
-def test_iterative_ik(human, active_dofs, wrist_name, data):
-    wrist_index = human.index(wrist_name)
-    print "active dofs : ", active_dofs
-    print "q_0.shape : ", human.q0.shape
-    print "wrist_index : ", wrist_index
+        # wrist index
+        wrist_name = "rWristY"
+        self.wrist_index = self.human.index(wrist_name)
 
-    iterative_ik=IterativeIK(
-        lambda q: human.jacobian(q, wrist_index),
-        lambda q: forward_kinematics(q, human, wrist_index),
-        active_dofs)
-    iterative_ik.q_full = np.copy(human.q0)
-    for config in data:
-        succeeded = iterative_ik.solve(
-            config[0][active_dofs], 
-            config[1])
-        if not succeeded:
-            return False
-    return True
+    def forward_kinematics(self, q_all):
+        self.human.forwardKinematics(q_all)
+        return self.human.data.oMi[self.wrist_index].translation
+
+    def sample_q(self):
+        nb_active_dofs = len(self.lower_limits)
+        q_rand = np.random.uniform(self.lower_limits, self.upper_limits)
+        assert nb_active_dofs == q_rand.shape[0]
+        for i in range(q_rand.shape[0]):
+            assert q_rand[i] > self.lower_limits[i]
+            assert q_rand[i] < self.upper_limits[i]
+        return q_rand
+
+    def sample_q_normal(self, q_mean):
+        nb_active_dofs = len(self.lower_limits)
+        q_rand = np.zeros(q_mean.shape)
+        for i in range(q_mean.shape[0]):
+            q_rand[i] = np.random.normal(q_mean[i], 
+                (self.upper_limits[i] - self.lower_limits[i]) / 10. )
+        q_rand = np.clip(q_rand, self.lower_limits, self.upper_limits)
+        assert q_mean.shape == q_rand.shape
+        assert nb_active_dofs == q_rand.shape[0]
+        for i in range(q_rand.shape[0]):
+            assert q_rand[i] >= self.lower_limits[i]
+            assert q_rand[i] <= self.upper_limits[i]
+        return q_rand
+
+    def sample_configs(self):
+        print "shape of q : ", self.human.q0.shape
+        print "human : ", self.human
+        nb_configs = 20
+        data = [None] * nb_configs
+        for i in range(nb_configs):
+            # q_active=rand((len(active_dofs)))
+            q_active=self.sample_q()
+            q_all=np.copy(self.human.q0)
+            q_all[self.active_dofs] = q_active
+            p = self.forward_kinematics(q_all)
+            data[i] = (q_all, p)
+            print "p_{} : {}".format(i, p.transpose())
+        return data
+
+    def run(self, data):
+        print "active dofs : ", self.active_dofs
+        print "q_0.shape : ", self.human.q0.shape
+        print "wrist_index : ", self.wrist_index
+
+        iterative_ik=IterativeIK(
+            lambda q: self.human.jacobian(q, self.wrist_index, True, False),
+            lambda q: self.forward_kinematics(q),
+            self.active_dofs,
+            self.lower_limits,
+            self.upper_limits)
+        iterative_ik.verbose = False
+        iterative_ik.q_full = np.copy(self.human.q0)
+        nb_succeed=0
+        for i, config in enumerate(data):
+            print '******* --- IK nb. {} --- *******'.format(i)
+            succeeded = iterative_ik.solve(
+                self.sample_q_normal(config[0][self.active_dofs]), config[1])
+            if succeeded:
+                nb_succeed += 1
+        print "Total nb if success : {} over {}".format(
+            nb_succeed, len(data))
+        return True
 
 
 if __name__== "__main__":
-    wrist_name = "rWristY"
-    human, active_dofs = initialize()
-    data = sample_configs(human, active_dofs, wrist_name)
-    success = test_iterative_ik(human, active_dofs, wrist_name, data)
+    
+    test_iterative_ik = TestIterativeIk(utils.human_urdf_path())
+    data = test_iterative_ik.sample_configs()
+    success = test_iterative_ik.run(data)
     print  "success : ", success
 

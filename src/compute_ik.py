@@ -23,7 +23,7 @@ import pinocchio as se3
 import utils
 
 print se3
-human = human = se3.RobotWrapper(utils.human_urdf_path())
+human = se3.RobotWrapper(utils.human_urdf_path())
 q = human.q0
 wrist_name = "rWristY"
 wrist_index = human.index(wrist_name)
