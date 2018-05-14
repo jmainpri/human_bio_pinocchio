@@ -28,4 +28,4 @@ q = human.q0
 print "shape of q : ", q.shape
 print "human : ", human
 for name in human.model.names:
-    print('{0:16} ==> {1:3d}'.format(name, human.index(name)))
+    print('{0:16} ==> {1:3d}'.format(name, human.index(name)-1))

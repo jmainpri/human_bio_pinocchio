@@ -7,6 +7,7 @@ Panels:
         - /Global Options1
         - /Status1
         - /TF1
+        - /Target1
       Splitter Ratio: 0.5
     Tree Height: 581
   - Class: rviz/Selection
@@ -508,6 +509,14 @@ Visualization Manager:
                                     {}
       Update Interval: 0
       Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: target
+      Name: Target
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 190; 190; 190
@@ -532,22 +541,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.66625
+      Distance: 1.74942
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.145576
-        Y: 0.102743
-        Z: 0.0587213
+        X: -0.0321241
+        Y: -0.060489
+        Z: 0.243228
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.829797
+      Pitch: 0.384797
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 5.46865
+      Yaw: 2.86365
     Saved: ~
 Window Geometry:
   Displays:

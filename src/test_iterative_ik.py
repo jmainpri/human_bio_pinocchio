@@ -121,7 +121,8 @@ class TestIterativeIk:
             print '******* --- IK nb. {} --- *******'.format(i)
             iterative_ik.configurations = []
             succeeded = iterative_ik.solve(
-                self.sample_q_normal(config[0][self.active_dofs]), config[1])
+                self.sample_q_normal(
+                    config[0][self.active_dofs]), config[1])
             self.trajectories.append(np.stack(iterative_ik.configurations))
             if succeeded:
                 nb_succeed += 1

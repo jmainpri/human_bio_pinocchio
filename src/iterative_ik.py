@@ -77,7 +77,7 @@ class IterativeIK:
         return q_tmp
 
     def jacobian(self, q):
-        """ 
+        """
         Returns the jacobian of the active dofs
         the class assumes that the underlying library 
         uses a full dof configuration model
@@ -140,7 +140,7 @@ class IterativeIK:
             m = dim(X) and n = dim(C).
 
         It assumes that the jacobian is computed for all dofs 
-        in active_indices_
+        in active_indices
         """
         J = self.jacobian(q)
         # print "J : ", J

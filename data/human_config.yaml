@@ -22,7 +22,7 @@ left_arm_dofs:
 
 right_arm_default:
   rShoulderX: 0.
-  lShoulderX: -1.43
+  lShoulderX: 0.
   rShoulderTransX: .018
   rShoulderTransY: .33
   rShoulderTransZ: .25
