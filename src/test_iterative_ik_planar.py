@@ -34,11 +34,8 @@ class TestPlanarIterativeIk(PinocchioIterativeIk):
         PinocchioIterativeIk.__init__(
             self,
             "../urdf/r2_robot.urdf",
-            "link2_to_end",
+            "link1_to_link2",
             self.active_dofs)
-
-    def index_joint(self, name):
-        return self.robot.model.getJointId(name)-1
 
 
 if __name__== "__main__":
