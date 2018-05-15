@@ -7,6 +7,8 @@ import utils
 import rospy
 import time
 import sys
+import optparse
+
 
 def load_data_from_file():
     import h5py
@@ -76,12 +78,12 @@ def publish_target(publisher, p):
     marker.color.b = 0.0
     publisher.publish(marker)
 
-def publish_trajecories(trajectories, targets):
+def publish_trajecories(urdf_path, trajectories, targets):
     rospy.init_node('human_bio_pinnochio_ik_player')
     idx = 0
     while idx < len(trajectories):
         trajectory = trajectories[idx]
-        robot = se3.RobotWrapper(utils.human_urdf_path())
+        robot = se3.RobotWrapper(urdf_path)
         trajectory_pub = rospy.Publisher('/joint_states', JointState)
         target_pub = rospy.Publisher("/target", Marker, queue_size = 100)
         for q in trajectory:
@@ -96,9 +98,20 @@ def publish_trajecories(trajectories, targets):
 
 
 if __name__ == '__main__':
+
+    parser = optparse.OptionParser("usage: %prog [options] arg1 arg2")
+    parser.add_option('--robot', 
+        default=True, type="int", dest='robot',
+        help='Play planar robot')
+    (options, args) = parser.parse_args()
+
+    urdf_path=utils.human_urdf_path()
+    if options.robot:
+         urdf_path="../urdf/r2_robot.urdf"
+   
     configurations, targets, trajectories = load_data_from_file()
     print "configurations.shape : ", configurations.shape
     print "targets.shape : ", targets.shape
     for trajectory in trajectories:
         print trajectory.shape
-    publish_trajecories(trajectories, targets)
+    publish_trajecories(urdf_path, trajectories, targets)

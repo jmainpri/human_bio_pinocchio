@@ -24,46 +24,39 @@ from pinocchio.utils import *
 from iterative_ik import *
 import os
 
-class TestIterativeIk:
+class PinocchioIterativeIk:
 
-    def __init__(self, urdf_path):
+    robot=None
+
+    def __init__(self, urdf_path, wrist_name, active_dofs):
         # Load config files
-        #  utils.human_urdf_path()
-        self.human=se3.RobotWrapper(urdf_path)
-        data=utils.human_config_data()
-        
-        # Setup default translations
-        q_default=np.zeros(self.human.q0.shape)
-        for name, value in data['right_arm_default'].iteritems():
-            q_default[self.index_config(name)] = value
-        self.human.q0 = q_default
+        if self.robot is None:
+            self.robot=se3.RobotWrapper(urdf_path)
 
-        # active dofs indices
-        self.active_dofs=[
-            self.index_config(name) for name in data["right_arm_dofs"]]
+        data=utils.human_config_data()
 
         # dof limits
-        model = self.human.model
+        model = self.robot.model
         self.lower_limits = model.lowerPositionLimit[self.active_dofs]
         self.upper_limits = model.upperPositionLimit[self.active_dofs]
         assert len(self.lower_limits) == len(self.upper_limits)
 
         # wrist index
-        wrist_name = "rWristY"
         self.wrist_index = self.index_joint(wrist_name)
+        print "self.wrist_index : ", self.wrist_index
 
         # store trajectories
         self.trajectories = []
 
     def index_config(self, name):
-        return self.human.model.getJointId(name) - 1
+        return self.robot.model.getJointId(name) - 1
 
     def index_joint(self, name):
-        return self.human.model.getJointId(name)
+        return self.robot.model.getJointId(name)
 
     def forward_kinematics(self, q_all):
-        self.human.forwardKinematics(q_all)
-        return np.array(self.human.data.oMi[self.wrist_index].translation)
+        self.robot.forwardKinematics(q_all)
+        return np.array(self.robot.data.oMi[self.wrist_index].translation)
 
     def sample_q(self):
         nb_active_dofs = len(self.lower_limits)
@@ -89,14 +82,14 @@ class TestIterativeIk:
         return q_rand
 
     def sample_configs(self):
-        print "shape of q : ", self.human.q0.shape
-        print "human : ", self.human
+        print "shape of q : ", self.robot.q0.shape
+        print "human : ", self.robot
         nb_configs = 10
         data = [None] * nb_configs
         for i in range(nb_configs):
             # q_active=rand((len(active_dofs)))
             q_active=self.sample_q()
-            q_all=np.copy(self.human.q0)
+            q_all=np.copy(self.robot.q0)
             q_all[self.active_dofs] = q_active
             p = self.forward_kinematics(q_all)
             data[i] = np.array([q_all, p])
@@ -105,17 +98,17 @@ class TestIterativeIk:
 
     def run(self, data):
         print "active dofs : ", self.active_dofs
-        print "q_0.shape : ", self.human.q0.shape
+        print "q_0.shape : ", self.robot.q0.shape
         print "wrist_index : ", self.wrist_index
 
         iterative_ik=IterativeIK(
-            lambda q: self.human.jacobian(q, self.wrist_index, True, False),
+            lambda q: self.robot.jacobian(q, self.wrist_index, True, False),
             lambda q: self.forward_kinematics(q),
             self.active_dofs,
             self.lower_limits,
             self.upper_limits)
         iterative_ik.verbose = False
-        iterative_ik.q_full = np.copy(self.human.q0)
+        iterative_ik.q_full = np.copy(self.robot.q0)
         nb_succeed=0
         for i, config in enumerate(data):
             print '******* --- IK nb. {} --- *******'.format(i)
@@ -144,12 +137,3 @@ class TestIterativeIk:
             f.create_dataset("trajectories_{:04d}".format(i), 
                 data=np.stack(t))
         f.close()
-
-
-if __name__== "__main__":
-    test_iterative_ik = TestIterativeIk(utils.human_urdf_path())
-    data = test_iterative_ik.sample_configs()
-    success = test_iterative_ik.run(data)
-    test_iterative_ik.save_data_file(data)
-    print  "success : ", success
-
