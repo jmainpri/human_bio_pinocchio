@@ -5,7 +5,8 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /Status1
+        - /RobotModel1
+        - /TF1
         - /Target1
       Splitter Ratio: 0.5
     Tree Height: 581
@@ -58,23 +59,268 @@ Visualization Manager:
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
+        HeadDummyY:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        HeadDummyZ:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         Link Tree Style: Links in Alphabetic Order
+        PelvisBody:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        PelvisDummyRotX:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        PelvisDummyRotY:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        PelvisDummyTransX:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        PelvisDummyTransY:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        PelvisDummyTransZ:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        TorsoDummyX:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        TorsoDummyY:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        TorsoDummyZ:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         base:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        end:
+        head:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        link1:
+        lAnkleDummyX:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        link2:
+        lAnkleDummyY:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lElbowDummy:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lFemur:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lFoot:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lHand:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lHipDummyX:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lHipDummyY:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lHumerus:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lRadius:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lShoulderDummyX:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lShoulderDummyZ:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lTibia:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lTorsoDummyTransX:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lTorsoDummyTransY:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lTorsoDummyTransZ:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lWristDummyX:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lWristDummyY:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rAnkleDummyX:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rAnkleDummyY:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rElbowDummy1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rElbowDummy2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rElbowDummy3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rFemur:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rFoot:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rHand:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rHipDummyX:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rHipDummyY:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rHumerus:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rRadius:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rShoulderDummyX:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rShoulderDummyY:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rTibia:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rTorsoDummyTransX:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rTorsoDummyTransY:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rTorsoDummyTransZ:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rWristDummy1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rWristDummy2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rWristDummy3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        torso:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -90,25 +336,178 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
+        HeadDummyY:
+          Value: true
+        HeadDummyZ:
+          Value: true
+        PelvisBody:
+          Value: true
+        PelvisDummyRotX:
+          Value: true
+        PelvisDummyRotY:
+          Value: true
+        PelvisDummyTransX:
+          Value: true
+        PelvisDummyTransY:
+          Value: true
+        PelvisDummyTransZ:
+          Value: true
+        TorsoDummyX:
+          Value: true
+        TorsoDummyY:
+          Value: true
+        TorsoDummyZ:
+          Value: true
         base:
           Value: true
-        end:
+        head:
           Value: true
-        link1:
+        lAnkleDummyX:
           Value: true
-        link2:
+        lAnkleDummyY:
           Value: true
-      Marker Scale: 0.8
+        lElbowDummy:
+          Value: true
+        lFemur:
+          Value: true
+        lFoot:
+          Value: true
+        lHand:
+          Value: true
+        lHipDummyX:
+          Value: true
+        lHipDummyY:
+          Value: true
+        lHumerus:
+          Value: true
+        lRadius:
+          Value: true
+        lShoulderDummyX:
+          Value: true
+        lShoulderDummyZ:
+          Value: true
+        lTibia:
+          Value: true
+        lTorsoDummyTransX:
+          Value: true
+        lTorsoDummyTransY:
+          Value: true
+        lTorsoDummyTransZ:
+          Value: true
+        lWristDummyX:
+          Value: true
+        lWristDummyY:
+          Value: true
+        rAnkleDummyX:
+          Value: true
+        rAnkleDummyY:
+          Value: true
+        rElbowDummy1:
+          Value: true
+        rElbowDummy2:
+          Value: true
+        rElbowDummy3:
+          Value: true
+        rFemur:
+          Value: true
+        rFoot:
+          Value: true
+        rHand:
+          Value: true
+        rHipDummyX:
+          Value: true
+        rHipDummyY:
+          Value: true
+        rHumerus:
+          Value: true
+        rRadius:
+          Value: true
+        rShoulderDummyX:
+          Value: true
+        rShoulderDummyY:
+          Value: true
+        rTibia:
+          Value: true
+        rTorsoDummyTransX:
+          Value: true
+        rTorsoDummyTransY:
+          Value: true
+        rTorsoDummyTransZ:
+          Value: true
+        rWristDummy1:
+          Value: true
+        rWristDummy2:
+          Value: true
+        rWristDummy3:
+          Value: true
+        torso:
+          Value: true
+      Marker Scale: 0.25
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        base:
-          link1:
-            link2:
-              end:
+        TorsoDummyZ:
+          lTorsoDummyTransX:
+            lTorsoDummyTransY:
+              lTorsoDummyTransZ:
                 {}
+          rTorsoDummyTransX:
+            rTorsoDummyTransY:
+              rTorsoDummyTransZ:
+                rShoulderDummyX:
+                  rShoulderDummyY:
+                    rHumerus:
+                      rElbowDummy1:
+                        rElbowDummy2:
+                          rElbowDummy3:
+                            rRadius:
+                              rWristDummy1:
+                                rWristDummy2:
+                                  rWristDummy3:
+                                    rHand:
+                                      {}
+          torso:
+            HeadDummyZ:
+              HeadDummyY:
+                head:
+                  {}
+            lShoulderDummyX:
+              lShoulderDummyZ:
+                lHumerus:
+                  lElbowDummy:
+                    lRadius:
+                      lWristDummyX:
+                        lWristDummyY:
+                          lHand:
+                            {}
+        base:
+          PelvisDummyTransX:
+            PelvisDummyTransY:
+              PelvisDummyTransZ:
+                PelvisDummyRotX:
+                  PelvisDummyRotY:
+                    PelvisBody:
+                      TorsoDummyX:
+                        TorsoDummyY:
+                          {}
+                      lHipDummyX:
+                        lHipDummyY:
+                          lFemur:
+                            lTibia:
+                              lAnkleDummyX:
+                                lAnkleDummyY:
+                                  lFoot:
+                                    {}
+                      rHipDummyX:
+                        rHipDummyY:
+                          rFemur:
+                            rTibia:
+                              rAnkleDummyX:
+                                rAnkleDummyY:
+                                  rFoot:
+                                    {}
       Update Interval: 0
       Value: true
     - Class: rviz/Marker
@@ -143,22 +542,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 4.47963
+      Distance: 2.26061
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.118488
-        Y: -0.112247
-        Z: -0.312716
+        X: 0.0173281
+        Y: -0.0601808
+        Z: -0.0184123
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 1.4598
+      Pitch: 0.769801
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 6.27686
+      Yaw: 5.58686
     Saved: ~
 Window Geometry:
   Displays:

@@ -84,6 +84,8 @@ class IterativeIK:
         """
         q_full = self.full_dof_config(q)
         J = self.__jacobian_fct(q_full)
+        # print "J:"
+        # print J
         return J[0:3, self.__active_dofs]
 
     def forward_kinematics(self, q):

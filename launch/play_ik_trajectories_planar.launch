@@ -23,7 +23,7 @@
 
   <!-- RViz -->
   <node name="rviz" pkg="rviz" type="rviz" 
-      args="-d $(find human_bio_pinocchio)/rviz/ik.rviz"/>
+      args="-d $(find human_bio_pinocchio)/rviz/planar.rviz"/>
 
 
 </launch>

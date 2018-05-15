@@ -101,7 +101,7 @@ if __name__ == '__main__':
 
     parser = optparse.OptionParser("usage: %prog [options] arg1 arg2")
     parser.add_option('--robot', 
-        default=True, type="int", dest='robot',
+        default=False, type="int", dest='robot',
         help='Play planar robot')
     (options, args) = parser.parse_args()
 
