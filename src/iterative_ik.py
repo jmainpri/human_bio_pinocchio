@@ -56,8 +56,8 @@ class IterativeIK:
             len(self.__upper_limits)>0 )
 
         self.__sigmoid_joint_limits = None
-        self.__magnitude = 0.005
-        self.__max_nb_iterations = 1000
+        self.__magnitude = 0.001
+        self.__max_nb_iterations = 3000
         self.__max_distance_to_target = 0.005
         self.__conservative_joint_limit_threshold = 1e-5
         
@@ -151,13 +151,13 @@ class IterativeIK:
         assert x_des.shape[0] == J.shape[0]       # size of task space
         assert q.shape[0]     == J.shape[1]       # size of config space 
         # J = np.eye(J.shape[0], J.shape[1])
-        J_plus = np.matrix(pinv(J))
+        J_plus = np.matrix(pinv(J, rcond=1e-3))
         # J_plus = np.matrix(J).transpose()
 
         # Warning the way we compute the difference in angle
         # should be worked out to handle task space distances
         # using quaternions.
-        dq = J_plus * self.__magnitude * normalize(x_pose - x_des)
+        dq = J_plus * self.__magnitude * normalize(x_des - x_pose)
         return dq
 
     def solve(self, q, x_des):
