@@ -27,5 +27,4 @@
   <node name="rviz" pkg="rviz" type="rviz" 
       args="-d $(find human_bio_pinocchio)/rviz/ik.rviz"/>
 
-
 </launch>

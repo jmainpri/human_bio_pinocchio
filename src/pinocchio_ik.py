@@ -72,7 +72,7 @@ class PinocchioIterativeIk:
         q_rand = np.zeros(q_mean.shape)
         for i in range(q_mean.shape[0]):
             q_rand[i] = np.random.normal(q_mean[i], 
-                (self.upper_limits[i] - self.lower_limits[i]) / 10. )
+                (self.upper_limits[i] - self.lower_limits[i]) / 5. )
         q_rand = np.clip(q_rand, self.lower_limits, self.upper_limits)
         assert q_mean.shape == q_rand.shape
         assert nb_active_dofs == q_rand.shape[0]

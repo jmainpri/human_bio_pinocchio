@@ -23,6 +23,7 @@ from numpy.linalg import pinv,norm
 import pinocchio as se3
 import utils
 
+# human = se3.RobotWrapper("../urdf/r2_robot.urdf")
 human = se3.RobotWrapper(utils.human_urdf_path())
 q = human.q0
 print "shape of q : ", q.shape
