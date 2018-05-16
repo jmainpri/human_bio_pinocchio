@@ -83,7 +83,7 @@ class PinocchioIterativeIk:
 
     def sample_configs(self):
         print "shape of q : ", self.robot.q0.shape
-        print "human : ", self.robot
+        print "robot : ", self.robot
         nb_configs = 10
         data = [None] * nb_configs
         for i in range(nb_configs):
@@ -101,8 +101,13 @@ class PinocchioIterativeIk:
         print "q_0.shape : ", self.robot.q0.shape
         print "wrist_index : ", self.wrist_index
 
+        jacobian_update_kinematics=True
+        jacobian_local_frame=True
         iterative_ik=IterativeIK(
-            lambda q: self.robot.jacobian(q, self.wrist_index, True, False),
+            lambda q: self.robot.jacobian(
+                q, self.wrist_index, 
+                jacobian_update_kinematics, 
+                jacobian_local_frame),
             lambda q: self.forward_kinematics(q),
             self.active_dofs,
             self.lower_limits,

@@ -86,6 +86,7 @@ def publish_trajecories(urdf_path, trajectories, targets):
         robot = se3.RobotWrapper(urdf_path)
         trajectory_pub = rospy.Publisher('/joint_states', JointState)
         target_pub = rospy.Publisher("/target", Marker, queue_size = 100)
+        print "targets[idx] : ", targets[idx].transpose()
         for q in trajectory:
             publish_target(target_pub, targets[idx])
             publish_joint_state(trajectory_pub, robot, q)

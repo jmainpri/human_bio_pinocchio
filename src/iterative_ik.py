@@ -150,6 +150,7 @@ class IterativeIK:
         assert x_des.shape[0] == x_pose.shape[0]  # size of task space
         assert x_des.shape[0] == J.shape[0]       # size of task space
         assert q.shape[0]     == J.shape[1]       # size of config space 
+        J = np.eye(J.shape[0], J.shape[1])
         J_plus = np.matrix(pinv(J))
 
         # Warning the way we compute the difference in angle

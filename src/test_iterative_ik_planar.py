@@ -34,7 +34,7 @@ class TestPlanarIterativeIk(PinocchioIterativeIk):
         PinocchioIterativeIk.__init__(
             self,
             "../urdf/r2_robot.urdf",
-            "link1_to_link2",
+            "link2_to_end",
             self.active_dofs)
 
 
