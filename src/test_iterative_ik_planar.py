@@ -29,7 +29,7 @@ class TestPlanarIterativeIk(PinocchioIterativeIk):
 
     def __init__(self):
         # active dofs indices
-        self.active_dofs=[0, 1]
+        self.active_dofs=[1, 2]
 
         PinocchioIterativeIk.__init__(
             self,

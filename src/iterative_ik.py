@@ -86,6 +86,7 @@ class IterativeIK:
         J = self.__jacobian_fct(q_full)
         # print "J:"
         # print J
+        # print "J.shape : ", J.shape
         return J[0:3, self.__active_dofs]
 
     def forward_kinematics(self, q):
@@ -150,9 +151,14 @@ class IterativeIK:
         assert x_des.shape[0] == x_pose.shape[0]  # size of task space
         assert x_des.shape[0] == J.shape[0]       # size of task space
         assert q.shape[0]     == J.shape[1]       # size of config space 
+
         # J = np.eye(J.shape[0], J.shape[1])
-        J_plus = np.matrix(pinv(J, rcond=1e-3))
+        J_plus = np.matrix(pinv(J, rcond=1e-2))
         # J_plus = np.matrix(J).transpose()
+        # print "J"
+        # print J
+        # print "J_plus"
+        # print J_plus
 
         # Warning the way we compute the difference in angle
         # should be worked out to handle task space distances

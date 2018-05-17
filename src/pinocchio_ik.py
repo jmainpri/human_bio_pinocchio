@@ -100,14 +100,11 @@ class PinocchioIterativeIk:
         print "active dofs : ", self.active_dofs
         print "q_0.shape : ", self.robot.q0.shape
         print "wrist_index : ", self.wrist_index
-
-        jacobian_update_kinematics=True
-        jacobian_local_frame=True
         iterative_ik=IterativeIK(
             lambda q: self.robot.jacobian(
                 q, self.wrist_index, 
-                jacobian_update_kinematics, 
-                jacobian_local_frame),
+                update_kinematics=True, 
+                local_frame=False),
             lambda q: self.forward_kinematics(q),
             self.active_dofs,
             self.lower_limits,
@@ -119,8 +116,9 @@ class PinocchioIterativeIk:
             print '******* --- IK nb. {} --- *******'.format(i)
             iterative_ik.configurations = []
             succeeded = iterative_ik.solve(
-                self.sample_q_normal(
-                    config[0][self.active_dofs]), config[1])
+                # self.sample_q_normal(config[0][self.active_dofs]),
+                self.robot.q0[self.active_dofs],
+                config[1])
             self.trajectories.append(np.stack(iterative_ik.configurations))
             if succeeded:
                 nb_succeed += 1
