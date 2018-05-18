@@ -21,8 +21,11 @@ import iterative_ik
 import utils
 import pinocchio as se3
 from pinocchio.utils import *
+from pinocchio.explog import *
 from iterative_ik import *
 import os
+
+
 
 class PinocchioIterativeIk:
 
@@ -32,6 +35,9 @@ class PinocchioIterativeIk:
         # Load config files
         if self.robot is None:
             self.robot=se3.RobotWrapper(urdf_path)
+
+        for name in self.robot.model.names:
+            print "{0:16} ==> {1:3d}".format(name, self.robot.index(name)-1)
 
         data=utils.human_config_data()
 
@@ -48,15 +54,12 @@ class PinocchioIterativeIk:
         # store trajectories
         self.trajectories = []
 
-    def index_config(self, name):
-        return self.robot.model.getJointId(name) - 1
-
     def index_joint(self, name):
         return self.robot.model.getJointId(name)
 
     def forward_kinematics(self, q_all):
         self.robot.forwardKinematics(q_all)
-        return np.array(self.robot.data.oMi[self.wrist_index].translation)
+        return self.robot.data.oMi[self.wrist_index].copy()
 
     def sample_q(self):
         nb_active_dofs = len(self.lower_limits)
@@ -91,9 +94,9 @@ class PinocchioIterativeIk:
             q_active=self.sample_q()
             q_all=np.copy(self.robot.q0)
             q_all[self.active_dofs] = q_active
-            p = self.forward_kinematics(q_all)
-            data[i] = np.array([q_all, p])
-            print "p_{} : {}".format(i, p.transpose())
+            se3 = self.forward_kinematics(q_all)
+            data[i] = np.array([q_all, se3])
+            print "p_{} : {}".format(i, se3.translation.transpose())
         return np.array(data)
 
     def run(self, data):
@@ -101,6 +104,7 @@ class PinocchioIterativeIk:
         print "q_0.shape : ", self.robot.q0.shape
         print "wrist_index : ", self.wrist_index
         iterative_ik=IterativeIK(
+            lambda x_des, x_pose: log(x_des.act(x_pose.inverse())).vector,
             lambda q: self.robot.jacobian(
                 q, self.wrist_index, 
                 update_kinematics=True, 
@@ -116,8 +120,8 @@ class PinocchioIterativeIk:
             print '******* --- IK nb. {} --- *******'.format(i)
             iterative_ik.configurations = []
             succeeded = iterative_ik.solve(
-                # self.sample_q_normal(config[0][self.active_dofs]),
-                self.robot.q0[self.active_dofs],
+                self.sample_q_normal(config[0][self.active_dofs]),
+                # self.robot.q0[self.active_dofs],
                 config[1])
             self.trajectories.append(np.stack(iterative_ik.configurations))
             if succeeded:
@@ -135,7 +139,10 @@ class PinocchioIterativeIk:
         f = h5py.File(directory + '/trajectories.hdf5', 'w')
         # print data_out[:,1].shape
         f.create_dataset("configurations", data=np.stack(data_out[:,0]))
-        f.create_dataset("points", data=np.stack(data_out[:,1]))
+        points = []
+        for idx, t in enumerate(data_out[:,1]):
+            points.append(data_out[idx,1].translation.transpose())
+        f.create_dataset("points", data=np.stack(points))
         for i, t in enumerate(self.trajectories):
             f.create_dataset("trajectories_{:04d}".format(i), 
                 data=np.stack(t))

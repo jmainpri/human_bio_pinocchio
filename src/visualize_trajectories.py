@@ -78,15 +78,19 @@ def publish_target(publisher, p):
     marker.color.b = 0.0
     publisher.publish(marker)
 
-def publish_trajecories(urdf_path, trajectories, targets):
-    rospy.init_node('human_bio_pinnochio_ik_player')
+def publish_trajecories(urdf_path, configurations, trajectories, targets):
     idx = 0
+    robot = se3.RobotWrapper(urdf_path)
+    trajectory_pub = rospy.Publisher('/joint_states', JointState)
+    target_pub = rospy.Publisher("/target", Marker, queue_size = 100)
+
     while idx < len(trajectories):
         trajectory = trajectories[idx]
-        robot = se3.RobotWrapper(urdf_path)
-        trajectory_pub = rospy.Publisher('/joint_states', JointState)
-        target_pub = rospy.Publisher("/target", Marker, queue_size = 100)
         print "targets[idx] : ", targets[idx].transpose()
+        publish_target(target_pub, targets[idx])
+        publish_joint_state(trajectory_pub, robot, configurations[idx])
+        time.sleep(1.) # play for 1 seconds
+        query_yes_no("Continue")
         for q in trajectory:
             publish_target(target_pub, targets[idx])
             publish_joint_state(trajectory_pub, robot, q)
@@ -110,9 +114,12 @@ if __name__ == '__main__':
     if options.robot:
          urdf_path="../urdf/r2_robot.urdf"
    
+    rospy.init_node('human_bio_pinnochio_ik_player')
+
     configurations, targets, trajectories = load_data_from_file()
     print "configurations.shape : ", configurations.shape
     print "targets.shape : ", targets.shape
+
     for trajectory in trajectories:
         print trajectory.shape
-    publish_trajecories(urdf_path, trajectories, targets)
+    publish_trajecories(urdf_path, configurations, trajectories, targets)

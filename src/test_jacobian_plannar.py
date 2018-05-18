@@ -41,7 +41,40 @@ class TestPlanarIterativeIk(PinocchioIterativeIk):
 if __name__== "__main__":
     test_iterative_ik = TestPlanarIterativeIk()
     data = test_iterative_ik.sample_configs()
-    success = test_iterative_ik.run(data)
-    test_iterative_ik.save_data_file(data)
+    iterative_ik=IterativeIK(
+            lambda q: test_iterative_ik.robot.jacobian(
+                q, test_iterative_ik.wrist_index, 
+                update_kinematics=True, 
+                local_frame=False),
+            lambda q: test_iterative_ik.forward_kinematics(q),
+            test_iterative_ik.active_dofs,
+            test_iterative_ik.lower_limits,
+            test_iterative_ik.upper_limits)
+    iterative_ik.q_full = np.copy(test_iterative_ik.robot.q0)
+
+    for i, config in enumerate(data):
+        # q = config[0] 
+        q = zero(3)
+        J = test_iterative_ik.robot.jacobian(
+                    q, 
+                    test_iterative_ik.wrist_index, 
+                    update_kinematics=True, 
+                    local_frame=False)
+        print "J_pin"
+        print J
+
+        print "J_lambda"
+        print iterative_ik.jacobian(q[:2])
+        print iterative_ik.full_dof_config(q[:2]).transpose()
+
+        J = test_iterative_ik.robot.jacobian(
+                    iterative_ik.full_dof_config(
+                        q[test_iterative_ik.active_dofs]), 
+                    test_iterative_ik.wrist_index, 
+                    update_kinematics=True, 
+                    local_frame=False)
+        print "J_pin2"
+        print J
+
     print  "success : ", success
 
