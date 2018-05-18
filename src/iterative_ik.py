@@ -42,7 +42,7 @@ class IterativeIK:
         upper_limits=[]):
 
         self.verbose = True
-        self.debug = True
+        self.debug = False
         self.q_full = None
         self.configurations = []
         
@@ -162,10 +162,13 @@ class IterativeIK:
         # J = np.eye(J.shape[0], J.shape[1])
         J_plus = np.matrix(pinv(J[0:3,:], rcond=1e-8))
         # J_plus = np.matrix(J).transpose()
-        # print "J"
-        # print J
-        # print "J_plus"
-        # print J_plus
+        if self.debug:
+            print "J"
+            print J
+            print "J_plus"
+            print J_plus
+            print "dist"
+            print dist
 
         # Warning the way we compute the difference in angle
         # should be worked out to handle task space distances
@@ -199,7 +202,7 @@ class IterativeIK:
         q_tmp = np.copy(q)
         x_pose = self.forward_kinematics(q_tmp)
         dist = self.__dist_fct(x_des, x_pose)
-        print " - Init  dist : ", dist.transpose()
+        print " - Init  dist : ", norm(dist)
         for it in range(self.__max_nb_iterations):
             q_tmp += self.single_step(q_tmp, dist)
             x_pose = self.forward_kinematics(q_tmp)
@@ -207,11 +210,11 @@ class IterativeIK:
             if norm(dist) < self.__max_distance_to_target:
                 has_succeeded = True
             if self.verbose and it % 100 == 0:
-                print "dist : ", dist.transpose()
+                print "dist : ", norm(dist)
             self.configurations.append(self.full_dof_config(q_tmp))
-            if has_succeeded or (it == 10 and self.debug):
+            if has_succeeded:
                 break
-        print " - final dist : ", dist.transpose()
+        print " - final dist : ", norm(dist)
         if not has_succeeded:
             print "Ik could not converge in given number of iterations"
         else:

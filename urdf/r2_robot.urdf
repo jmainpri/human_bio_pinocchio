@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot name="flexible">
 
-  <link name="base_link">
+  <link name="base">
     <visual>
       <geometry>
         <cylinder length="0.2" radius="0.1"/>
@@ -50,7 +50,7 @@
 
 <joint name="base_to_link1" type="revolute">
   <axis xyz="0 0 1"/>
-  <parent link="base_link"/>
+  <parent link="base"/>
   <child link="link1"/>
   <origin xyz="0 0 .1"/>
   <limit effort="15" lower="-3.15" upper="3.15" velocity="5"/>

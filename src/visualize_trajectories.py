@@ -69,9 +69,10 @@ def publish_target(publisher, p):
     marker.pose.position.x = p[0]
     marker.pose.position.y = p[1]
     marker.pose.position.z = p[2]
-    marker.scale.x = 0.05
-    marker.scale.y = 0.05
-    marker.scale.z = 0.05
+    radius = .1
+    marker.scale.x = radius
+    marker.scale.y = radius
+    marker.scale.z = radius
     marker.color.a = 1.0
     marker.color.r = 0.0
     marker.color.g = 1.0

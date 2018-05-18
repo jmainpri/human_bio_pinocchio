@@ -42,15 +42,14 @@ if __name__== "__main__":
     test_iterative_ik = TestPlanarIterativeIk()
     data = test_iterative_ik.sample_configs()
     iterative_ik=IterativeIK(
-            lambda q: test_iterative_ik.robot.jacobian(
-                q, test_iterative_ik.wrist_index, 
-                update_kinematics=True, 
-                local_frame=False),
-            lambda q: test_iterative_ik.forward_kinematics(q),
+            None,
+            test_iterative_ik.jacobian,
+            test_iterative_ik.forward_kinematics,
             test_iterative_ik.active_dofs,
             test_iterative_ik.lower_limits,
             test_iterative_ik.upper_limits)
     iterative_ik.q_full = np.copy(test_iterative_ik.robot.q0)
+    iterative_ik.debug = False
 
     for i, config in enumerate(data):
         # q = config[0] 
@@ -60,20 +59,15 @@ if __name__== "__main__":
                     test_iterative_ik.wrist_index, 
                     update_kinematics=True, 
                     local_frame=False)
-        print "J_pin"
+        print "J local false"
         print J
 
-        print "J_lambda"
+        print "J ik"
         print iterative_ik.jacobian(q[:2])
         print iterative_ik.full_dof_config(q[:2]).transpose()
 
-        J = test_iterative_ik.robot.jacobian(
-                    iterative_ik.full_dof_config(
-                        q[test_iterative_ik.active_dofs]), 
-                    test_iterative_ik.wrist_index, 
-                    update_kinematics=True, 
-                    local_frame=False)
-        print "J_pin2"
+        J = test_iterative_ik.jacobian(q)
+        print "J local true + rot"
         print J
 
     print  "success : ", success
