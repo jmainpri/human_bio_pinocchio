@@ -3,7 +3,7 @@
   <name>human_bio_pinocchio</name>
   <version>0.0.0</version>
   <description>The human_urdf package</description>
-  <maintainer email="rhhayne@wpi.edu">Rafi Hayne</maintainer>
+  <maintainer email="mainprice@gmail.com">Jim Mainprice</maintainer>
   <license>BSD</license>
 
   <buildtool_depend>catkin</buildtool_depend>
