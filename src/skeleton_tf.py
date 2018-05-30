@@ -4,7 +4,7 @@ import tf
 import optparse
 import os
 
-def publishTransforms(row, br):
+def publish_transforms(row, br):
     """ all joint data is concatenated in one row """
     for i in range(0, len(row), 7):
         pos = row[i: i + 3]             # 3 fields position data
@@ -25,7 +25,7 @@ def publish_hdf5_file(filename):
     # iterate through file and publish transforms
     rate = rospy.Rate(120)
     for i, row in enumerate(skeletondata):
-        publishTransforms(row, br)
+        publish_transforms(row, br)
         if i % 400 == 0:
             print "progress : {} %".format(float(i) / float(len(skeletondata)))
         rate.sleep()

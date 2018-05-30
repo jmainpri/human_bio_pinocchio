@@ -28,7 +28,11 @@ import os
 
 
 class PinocchioIterativeIk:
-
+    """
+        This class setsup an iterative jacobian pseudo
+        inverse kinematics solver given a urdf model of a robot
+        using the Pinocchio library.
+    """
     robot=None
 
     def __init__(self, urdf_path, wrist_name, active_dofs):
@@ -61,6 +65,9 @@ class PinocchioIterativeIk:
         return self.robot.model.getJointId(name)
 
     def sample_q(self):
+        """
+        Samples a configuration within joint limits.
+        """
         nb_active_dofs = len(self.lower_limits)
         q_rand = np.random.uniform(self.lower_limits, self.upper_limits)
         assert nb_active_dofs == q_rand.shape[0]
@@ -70,6 +77,10 @@ class PinocchioIterativeIk:
         return q_rand
 
     def sample_q_normal(self, q_mean):
+        """
+        Samples a configuration close a to a given configuration
+        within joint limits.
+        """
         nb_active_dofs = len(self.lower_limits)
         q_rand = np.zeros(q_mean.shape)
         for i in range(q_mean.shape[0]):
@@ -125,6 +136,9 @@ class PinocchioIterativeIk:
 
 
     def run(self, data):
+        """
+            Runs the iterative inverse kinematics solver
+        """
         print "active dofs : ", self.active_dofs
         print "q_0.shape : ", self.robot.q0.shape
         print "wrist_index : ", self.wrist_index
