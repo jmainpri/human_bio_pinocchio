@@ -1,16 +1,16 @@
 # This configuration works with file: 
 
 right_arm_joints:
-  - joint84     # Hand
-  - joint77     # Elbow
   - joint70     # Shoulder
   - joint63     # Inner Shoulder
+  - joint77     # Elbow
+  - joint84     # Hand
 
 left_arm_joints:
-  - joint56     # Hand 
-  - joint49     # Elbow
   - joint42     # Shoulder
   - joint35     # Inner Shoulder
+  - joint49     # Elbow
+  - joint56     # Hand 
 
 spine:
   - joint70     # Pelvis Low
@@ -22,12 +22,13 @@ head:
   - joint28     # Head
 
 labels:
-  
-  rWrist: joint84
-  rElbow: joint77
+
   rShoulder: joint70
+  rElbow: joint77
+  rWrist: joint84
+
+  lShoulder: joint42
+  lElbow: joint49
   lWrist: joint56
 
-  lElbow: joint49
-  lShoulder: joint42
   Pelvis: joint70
