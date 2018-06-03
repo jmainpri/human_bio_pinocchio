@@ -36,18 +36,19 @@ class Affine3d:
 
     def __str__(self):
         ss = "Transform :\n"
-        ss += " - translation (x = {:.3f}, y = {:.3f}, z = {:.3f})\n".format(
+        ss += " - translation (x = {:.4f}, y = {:.4f}, z = {:.4f})\n".format(
             self.translation[0], self.translation[1], self.translation[2])
         ss += " - rotation \
-   (x = {:.3f}, y = {:.3f}, z = {:.3f}, w = {:.3f})\n".format(
+   (x = {:.4f}, y = {:.4f}, z = {:.4f}, w = {:.4f})\n".format(
             self.rotation[0], self.rotation[1], 
             self.rotation[2], self.rotation[3])
         return ss
 
-class HumanMocapFrame:
+
+class HumanMocapSemantics:
     """
         Configurable interface for mocap data frames.
-        Gives a semantic interpratation of the marker data.
+        Gives a semantic interpratation of the marker data in a frame.
     """
     def __init__(self):
         self.__load_config()
@@ -63,12 +64,13 @@ class HumanMocapFrame:
         self.l_shoulder     = lambda frame : frame[labels['lShoulder']]
         self.l_elbow        = lambda frame : frame[labels['lElbow']]
         self.l_wrist        = lambda frame : frame[labels['lWrist']]
-        self.pelvis         = lambda frame : frame[labels['Pelvis']]\
+        self.pelvis         = lambda frame : frame[labels['Pelvis']]
 
         self.right_arm_joints = (
             lambda f : [f[_] for _ in self.__config['right_arm_joints']])
         self.left_arm_joints = (
             lambda f : [f[_] for _ in self.__config['left_arm_joints']])
+
 
 class HumanMocapData:
     """
@@ -76,10 +78,7 @@ class HumanMocapData:
     """
     def __init__(self, filename):
         self.__load_data(filename)
-        self.mocap_frame = HumanMocapFrame()
-
-    def nb_key_frames(self):
-        return len(self._data)
+        self.semantics = HumanMocapSemantics()
 
     def __load_data(self, filename):
         """
@@ -88,6 +87,9 @@ class HumanMocapData:
         file = h5py.File(filename, 'r')
         skeletonname = file['skeletons'].keys()[0]
         self._data = file['skeletons'][skeletonname][:]  # open as np array
+
+    def nb_frames(self):
+        return len(self._data)
 
     def frame(self, i):
         """ 
@@ -107,9 +109,18 @@ def main():
     parser.add_argument(dest='filepath', type=str)
     args = parser.parse_args()
     mocap_data = HumanMocapData(args.filepath)
-    frame = mocap_data.frame(0)
-    # print frame
-    print mocap_data.mocap_frame.r_wrist(frame)
+    hz=120
+    print "Mocap Data"
+    print " - filepath : ", args.filepath
+    print " - nb_frames : ", mocap_data.nb_frames()
+    print " - Hz : ", hz
+    print " - dt : ", 1./hz
+    print " - duration : {} min".format(mocap_data.nb_frames() * 1./(60.*hz))
+
+    for i in range(2000, 2100, 30):
+        frame = mocap_data.frame(i)
+        print "Frame : ", i
+        print mocap_data.semantics.r_wrist(frame)
 
 if __name__ == '__main__':
     main()
