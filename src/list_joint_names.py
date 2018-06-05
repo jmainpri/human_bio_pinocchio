@@ -22,11 +22,24 @@ from pinocchio.explog import exp,log
 from numpy.linalg import pinv,norm
 import pinocchio as se3
 import utils
+import operator
 
-# human = se3.RobotWrapper("../urdf/r2_robot.urdf")
-human = se3.RobotWrapper(utils.human_urdf_path())
-q = human.q0
-print "shape of q : ", q.shape
-print "human : ", human
-for name in human.model.names:
-    print('{0:16} ==> {1:3d}'.format(name, human.index(name)-1))
+# filename = "../urdf/r2_robot.urdf"
+# filename = utils.human_urdf_path()
+def joint_names_from_urdf(filename):
+	robot = se3.RobotWrapper(filename)
+	q = robot.q0
+	joint_names = {}
+	print "shape of q : ", q.shape
+	print "human : ", robot
+	for name in robot.model.names:
+		joint_names[name] = robot.index(name)-1
+	return joint_names
+
+
+if __name__ == '__main__':
+	# filename = "../urdf/r2_robot.urdf"
+    names = joint_names_from_urdf(utils.human_urdf_path())
+    sorted_names = sorted(names.items(), key=operator.itemgetter(1))
+    for name, idx in sorted_names:
+    	print('{0:16} ==> {1:3d}'.format(name, idx))

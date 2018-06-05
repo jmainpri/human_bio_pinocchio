@@ -20,11 +20,15 @@
 from mocap_interface import *
 from bioik import *
 import numpy.linalg as la
+from list_joint_names import *
+
 
 class BioMotiveIk():
 
     def __init__(self, semantics):
         self.semantics_ = semantics
+        self._q = joint_names_from_urdf(utils.human_urdf_path())
+        self._q = dict.fromkeys( self._q.iterkeys(), 0. ) 
 
     def joint_frame(self, t_p_inv, frame, label):
         """ Transform the frame in another frame """
@@ -55,7 +59,7 @@ class BioMotiveIk():
             r_elbow.translation - 
             r_wrist.translation)
 
-        q = {}
+        q = self._q.copy()
         q["PelvisTransX"]       = t_pelvis.translation[0]
         q["PelvisTransY"]       = t_pelvis.translation[1]
         q["PelvisTransZ"]       = t_pelvis.translation[2]
