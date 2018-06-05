@@ -13,7 +13,7 @@ left_arm_joints:
   - joint56     # Hand 
 
 spine:
-  - joint70     # Pelvis Low
+  - joint0      # Pelvis Low
   - joint7      # Pelvis High
   - joint14     # Back
   - joint21     # Neck
@@ -30,4 +30,4 @@ labels:
   lElbow:     joint49
   lWrist:     joint56
   Torso:      joint14
-  Pelvis:     joint70
+  Pelvis:     joint0
