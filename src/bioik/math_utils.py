@@ -56,6 +56,76 @@ _AXES2TUPLE = {
 _TUPLE2AXES = dict((v, k) for k, v in _AXES2TUPLE.items())
 
 
+class Affine3d:
+    """
+        3D dimensional affine/homogenous transform
+        The rotation is encoded using quaternions. 
+        Uses the ROS convention for the quaternion (x, y, z, w)
+        This should be the main interface for this module. 
+
+        TODO: should write a test for this class
+    """
+    translation = None
+    rotation = None
+    def __init__(self, t, r):
+        self.translation = t
+        self.rotation = r
+
+    def linear(self):
+        return numpy.mat(quaternion_matrix(self.rotation))
+
+    def matrix(self):
+        rotation_matrix = self.linear()
+        tm = numpy.bmat([rotation_matrix, 
+            numpy.matrix(self.translation).transpose()])
+        last_row = numpy.mat([0., 0., 0., 1.])
+        return numpy.bmat([[tm],[last_row]])
+
+    def __str__(self):
+        ss = "Transform :\n"
+        ss += " - translation (x = {:.4f}, y = {:.4f}, z = {:.4f})\n".format(
+            self.translation[0], 
+            self.translation[1], 
+            self.translation[2])
+        ss += " - rotation \
+   (x = {:.4f}, y = {:.4f}, z = {:.4f}, w = {:.4f})\n".format(
+            self.rotation[0], self.rotation[1], 
+            self.rotation[2], self.rotation[3])
+        return ss
+
+
+def quaternion_matrix(quaternion):
+    """Return rotation matrix from quaternion.
+
+    >>> M = quaternion_matrix([0.99810947, 0.06146124, 0, 0])
+    >>> numpy.allclose(M, rotation_matrix(0.123, [1, 0, 0]))
+    True
+    >>> M = quaternion_matrix([1, 0, 0, 0])
+    >>> numpy.allclose(M, numpy.identity(4))
+    True
+    >>> M = quaternion_matrix([0, 1, 0, 0])
+    >>> numpy.allclose(M, numpy.diag([1, -1, -1, 1]))
+    True
+
+    """
+    # We assum the ROS convention (x, y, z, w)
+    quaternion_tmp = numpy.array([0.0]*4)
+    quaternion_tmp[1] = quaternion[0] # x
+    quaternion_tmp[2] = quaternion[1] # y
+    quaternion_tmp[3] = quaternion[2] # z
+    quaternion_tmp[0] = quaternion[3] # w
+    q = numpy.array(quaternion_tmp, dtype=numpy.float64, copy=True)
+    n = numpy.dot(q, q)
+    if n < _EPS:
+        return numpy.identity(4)
+    q *= math.sqrt(2.0 / n)
+    q = numpy.outer(q, q)
+    return numpy.array([
+        [1.0-q[2, 2]-q[3, 3],     q[1, 2]-q[3, 0],     q[1, 3]+q[2, 0]],
+        [    q[1, 2]+q[3, 0], 1.0-q[1, 1]-q[3, 3],     q[2, 3]-q[1, 0]],
+        [    q[1, 3]-q[2, 0],     q[2, 3]+q[1, 0], 1.0-q[1, 1]-q[2, 2]]])
+
+
 def euler_from_matrix(matrix, axes='sxyz'):
 
     # Return Euler angles from rotation matrix for specified axis sequence.

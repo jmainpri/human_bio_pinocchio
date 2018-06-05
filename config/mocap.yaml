@@ -23,12 +23,11 @@ head:
 
 labels:
 
-  rShoulder: joint70
-  rElbow: joint77
-  rWrist: joint84
-
-  lShoulder: joint42
-  lElbow: joint49
-  lWrist: joint56
-
-  Pelvis: joint70
+  rShoulder:  joint70
+  rElbow:     joint77
+  rWrist:     joint84
+  lShoulder:  joint42
+  lElbow:     joint49
+  lWrist:     joint56
+  Torso:      joint14
+  Pelvis:     joint70

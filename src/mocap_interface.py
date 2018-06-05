@@ -21,28 +21,7 @@ import utils
 import os
 import h5py
 import argparse
-
-
-class Affine3d:
-    """
-        3D dimensional affine/homogenous transform
-        The rotation is encoded using quaternions
-    """
-    translation = None
-    rotation = None
-    def __init__(self, t, r):
-        self.translation = t
-        self.rotation = r
-
-    def __str__(self):
-        ss = "Transform :\n"
-        ss += " - translation (x = {:.4f}, y = {:.4f}, z = {:.4f})\n".format(
-            self.translation[0], self.translation[1], self.translation[2])
-        ss += " - rotation \
-   (x = {:.4f}, y = {:.4f}, z = {:.4f}, w = {:.4f})\n".format(
-            self.rotation[0], self.rotation[1], 
-            self.rotation[2], self.rotation[3])
-        return ss
+from bioik.math_utils import *
 
 
 class HumanMocapSemantics:
@@ -65,6 +44,7 @@ class HumanMocapSemantics:
         self.l_elbow        = lambda frame : frame[labels['lElbow']]
         self.l_wrist        = lambda frame : frame[labels['lWrist']]
         self.pelvis         = lambda frame : frame[labels['Pelvis']]
+        self.torso          = lambda frame : frame[labels['Torso']]
 
         self.right_arm_joints = (
             lambda f : [f[_] for _ in self.__config['right_arm_joints']])
@@ -102,25 +82,3 @@ class HumanMocapData:
             rotation = frame[i + 3: i + 7]    # 4 fields orientation data
             labeled_frame["joint" + str(i)] = Affine3d(translation, rotation)
         return labeled_frame
-
-
-def main():
-    parser = argparse.ArgumentParser(description='Test mocap data so far.')
-    parser.add_argument(dest='filepath', type=str)
-    args = parser.parse_args()
-    mocap_data = HumanMocapData(args.filepath)
-    hz=120
-    print "Mocap Data"
-    print " - filepath : ", args.filepath
-    print " - nb_frames : ", mocap_data.nb_frames()
-    print " - Hz : ", hz
-    print " - dt : ", 1./hz
-    print " - duration : {} min".format(mocap_data.nb_frames() * 1./(60.*hz))
-
-    for i in range(2000, 2100, 30):
-        frame = mocap_data.frame(i)
-        print "Frame : ", i
-        print mocap_data.semantics.r_wrist(frame)
-
-if __name__ == '__main__':
-    main()

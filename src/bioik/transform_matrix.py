@@ -30,7 +30,7 @@
 '''Functions for defining, extracting data from, and serializing transform matrices'''
 from numpy import *
 
-def MakeTransform(rot,trans):
+def MakeTransform(rot, trans):
     # print trans
     # print type(trans)
     # print size(trans,0)
@@ -39,28 +39,28 @@ def MakeTransform(rot,trans):
     # print type(rot)
     # print size(rot,0)
     # print size(rot,1)
-    if size(rot,0) == 9 and size(rot,1) == 1:
-        tm = rot.reshape(3,3)
-    elif size(rot,0) == 3 and size(rot,1) == 3:
+    if size(rot, 0) == 9 and size(rot, 1) == 1:
+        tm = rot.reshape(3, 3)
+    elif size(rot, 0) == 3 and size(rot, 1) == 3:
         tm = rot
     else:
         print('rotation improperly specified');
 
-    if size(trans,0) == 3 and size(trans,1) == 1:
+    if size(trans, 0) == 3 and size(trans, 1) == 1:
         #tm = bmat('tm trans')
         tm = bmat([tm,trans])
-    elif size(trans,0) == 1 and size(trans,1) == 3:
+    elif size(trans, 0) == 1 and size(trans, 1) == 3:
         # Note: for some reason the following line does not work anymore.
         #       There's even an open ticket about it being a bug:
         #       http://projects.scipy.org/numpy/ticket/680
         #       
         #       Apparently it won't be fixed. So we change the function call
         # tm = bmat('tm trans.T')
-        tm = bmat([tm,trans.T])
+        tm = bmat([tm, trans.T])
     else:
         print('translation improperly specified');
     
-    lastrow = mat([0,0,0,1])
+    lastrow = mat([0, 0, 0, 1])
     return bmat('tm; lastrow')
 
 def GetRot(tm):
