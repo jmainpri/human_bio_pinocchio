@@ -52,6 +52,26 @@ class BioMotiveIk():
         t_torso = Affine3d(eye(4))
         t_torso.translation += array([0.037432, 0, 0.139749])
 
+        # SHOULDER
+        UAY = gleno_center - elb_center
+        UAX = cross(UAY, -elb_axis)  # / la.norm(elb_axis)  # - UAZ_offset
+        UAZ = cross(UAX, UAY)
+        UAE = normalize(transpose(matrix([UAX, UAY, UAZ])))
+
+        # ELBOW
+        LAY = LApY
+        LAX = cross(LAY, wrist_axis)
+        LAZ = cross(LAX, LAY)
+        LAE = normalize(transpose(matrix([LAX, LAY, LAZ])))
+        # LAE = t_elbow[0:3][:, 0:3]
+
+        # HAND
+        handY = wrist_center - hand_origin
+        handX = cross(handY, wrist_axis)
+        handZ = cross(handX, handY)
+        handE = normalize(transpose(matrix([handX, handY, handZ])))
+
+        
         pelvis_euler    = euler_from_matrix(t_pelvis.linear(), 'rxyz')
         torso_euler     = array([0.]*3)
         shoulder_euler  = euler_from_matrix(
