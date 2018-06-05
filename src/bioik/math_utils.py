@@ -70,7 +70,7 @@ class Affine3d:
     def __init__(self, t, r=numpy.array([0., 0., 0., 1.])):
         if t.shape == (4, 4):
             self._set_matrix(t)
-        elif t.shape != (3, ):
+        elif t.shape == (3, ):
             self.translation = t
             self.rotation = r
 
