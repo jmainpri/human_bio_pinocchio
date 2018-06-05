@@ -51,6 +51,9 @@ class HumanMocapSemantics:
         self.left_arm_joints = (
             lambda f : [f[_] for _ in self.__config['left_arm_joints']])
 
+    def transform(self, frame, label):
+        return frame[self.__config['labels'][label]]
+
 
 class HumanMocapData:
     """
