@@ -53,8 +53,8 @@ if __name__ == '__main__':
     parser.add_option('-f', 
         default="mocap_data_1526395234.hdf5", type="str", dest='filename',
         help='Path to the file')
-     parser.add_option('--joint-state', 
-        default=False, type="bool", dest='joint_state',
+    parser.add_argument('--joint-state', 
+        dest='joint_state', action='store_true',
         help='whether to pubish joint state')
     (options, args) = parser.parse_args()
     publish_hdf5_file(options.filename, options.joint_state)
