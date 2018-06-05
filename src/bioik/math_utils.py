@@ -77,7 +77,7 @@ class Affine3d:
     def _set_matrix(self, M):
         if M.shape != (4, 4):
             raise ValueError('Matrix not of the correct size')
-        self.translation = M[0:3, 3]
+        self.translation = numpy.squeeze(numpy.asarray(M[0:3, 3]))
         self.rotation = quaternion_from_matrix(M)
 
     def linear(self):

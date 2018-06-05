@@ -29,7 +29,6 @@ class BioMotiveIk():
     def joint_frame(self, t_p_inv, frame, label):
         """ Transform the frame in another frame """
         T = self.semantics_.transform(frame, label)
-        print T
         return Affine3d(t_p_inv * T.matrix())
 
     def joint_state(self, frame):
@@ -45,8 +44,7 @@ class BioMotiveIk():
 
         pelvis_euler = euler_from_matrix(t_pelvis.linear(), 'rxzy')
 
-        print t_torso
-        t_torso_inv = la.inv(t_torso.matrix())
+        t_torso_inv = Affine3d(la.inv(t_torso.matrix()))
         shoulder_center = t_torso_inv * r_shoulder.translation
         
         d_r_shoulder_to_elbow = la.norm(
