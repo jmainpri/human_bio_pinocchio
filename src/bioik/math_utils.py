@@ -67,12 +67,12 @@ class Affine3d:
     """
     translation = None
     rotation = None
-    def __init__(self, t, r):
-        self.translation = t
-        self.rotation = r
-
-    def __init__(self, M):
-        self._set_matrix(M)
+    def __init__(self, t, r=numpy.array([0., 0., 0., 1.])):
+        if t.shape == (4, 4):
+            self._set_matrix(t)
+        elif t.shape != (3, ):
+            self.translation = t
+            self.rotation = r
 
     def _set_matrix(self, M):
         if M.shape != (4, 4):
