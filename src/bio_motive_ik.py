@@ -26,25 +26,47 @@ class BioMotiveIk():
     def __init__(self, semantics):
         self.semantics_ = semantics
 
-    def joint_frame(self, t_p_inv, labeled_frame, label):
+    def joint_frame(self, t_p_inv, frame, label):
         """ Transform the frame in another frame """"
-        M = self.semantics_.transform(labeled_frame, label).matrix()
+        M = self.semantics_.transform(frame, label).matrix()
         return Affine3d(t_p_inv * M)
 
-    def joint_state(self, labeled_frame, semantics):
-        t_pelvis    = self.semantics_.pelvis(labeled_frame).matrix()
+    def joint_state(self, frame, semantics):
+        t_pelvis    = self.semantics_.pelvis(frame).matrix()
         t_p_inv     = la.inv(t_pelvis.matrix())
-        t_torso     = self.joint_frame(t_p_inv, labeled_frame, 'Torso'))
-        r_shoulder  = self.joint_frame(t_p_inv, labeled_frame, 'rShoulder'))
-        r_elbow     = self.joint_frame(t_p_inv, labeled_frame, 'rElbow'))
-        r_wrist     = self.joint_frame(t_p_inv, labeled_frame, 'rWrist'))
-        l_shoulder  = self.joint_frame(t_p_inv, labeled_frame, 'lShoulder'))
-        l_elbow     = self.joint_frame(t_p_inv, labeled_frame, 'lElbow'))
-        l_wrist     = self.joint_frame(t_p_inv, labeled_frame, 'lWrist'))
+        t_torso     = self.joint_frame(t_p_inv, frame, 'Torso')
+        r_shoulder  = self.joint_frame(t_p_inv, frame, 'rShoulder')
+        r_elbow     = self.joint_frame(t_p_inv, frame, 'rElbow')
+        r_wrist     = self.joint_frame(t_p_inv, frame, 'rWrist')
+        l_shoulder  = self.joint_frame(t_p_inv, frame, 'lShoulder')
+        l_elbow     = self.joint_frame(t_p_inv, frame, 'lElbow')
+        l_wrist     = self.joint_frame(t_p_inv, frame, 'lWrist')
+
+        pelvis_euler = euler_from_matrix(t_pelvis, 'rxzy')
+
+        t_torso_inv = la.inv(t_torso.matrix())
+        shoulder_center = t_torso_inv * r_shoulder.translation
+        
+        d_r_shoulder_to_elbow = la.norm(
+            r_shoulder.translation - 
+            r_elbow.translation) 
+        
+        d_r_elbow_to_wrist = la.norm(
+            r_elbow.translation - 
+            r_wrist.translation)
 
         q = {}
-        t_torso_a = Affine3d(t_torso)
-        shoulder_center = t_torso_a * r_shoulder.translation
-        q["rShoulderTransX"] = shoulder_center[0]
-        q["rShoulderTransY"] = shoulder_center[1]
-        q["rShoulderTransZ"] = shoulder_center[2]
+        q["PelvisTransX"]       = t_pelvis.translation[0]
+        q["PelvisTransY"]       = t_pelvis.translation[1]
+        q["PelvisTransZ"]       = t_pelvis.translation[2]
+        q["PelvisRotX"]         = pelvis_euler[0]
+        q["PelvisRotY"]         = pelvis_euler[1]
+        q["PelvisRotZ"]         = pelvis_euler[2]
+        q["rShoulderTransX"]    = shoulder_center[0]
+        q["rShoulderTransY"]    = shoulder_center[1]
+        q["rShoulderTransZ"]    = shoulder_center[2]
+        q["rArmTrans"]          = d_r_shoulder_to_elbow
+        q["rForeArmTrans"]      = d_r_elbow_to_wrist
+        return q
+
+
