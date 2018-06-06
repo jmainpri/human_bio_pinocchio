@@ -28,11 +28,15 @@ class BioMotiveIk():
         self.semantics_ = semantics
         self._q = joint_names_from_urdf(utils.human_urdf_path())
         self._q = dict.fromkeys( self._q.iterkeys(), 0. ) 
+        self._frames_to_draw = {}
 
     def joint_frame(self, t_p_inv, frame, label):
         """ Transform the frame in another frame """
         T = self.semantics_.transform(frame, label)
         return Affine3d(t_p_inv * T.matrix())
+
+    def frame_to_draw(self):
+        return self._frames_to_draw
 
     def joint_state(self, frame):
         t_pelvis    = self.semantics_.pelvis(frame)
@@ -42,50 +46,22 @@ class BioMotiveIk():
         t_p_inv     = la.inv(t_pelvis.matrix())
 
         # t_torso = self.joint_frame(t_p_inv, frame, 'Torso')
-        r_shoulder  = self.joint_frame(t_p_inv, frame, 'rShoulder')
-        r_elbow     = self.joint_frame(t_p_inv, frame, 'rElbow')
-        r_wrist     = self.joint_frame(t_p_inv, frame, 'rWrist')
-        l_shoulder  = self.joint_frame(t_p_inv, frame, 'lShoulder')
-        l_elbow     = self.joint_frame(t_p_inv, frame, 'lElbow')
-        l_wrist     = self.joint_frame(t_p_inv, frame, 'lWrist')
+        t = np.eye(4)
+        r_shoulder  = self.joint_frame(t, frame, 'rShoulder')
+        r_elbow     = self.joint_frame(t, frame, 'rElbow')
+        r_wrist     = self.joint_frame(t, frame, 'rWrist')
+        l_shoulder  = self.joint_frame(t, frame, 'lShoulder')
+        l_elbow     = self.joint_frame(t, frame, 'lElbow')
+        l_wrist     = self.joint_frame(t, frame, 'lWrist')
 
         t_torso = Affine3d(eye(4))
         t_torso.translation += array([0.037432, 0, 0.139749])
 
-        # SHOULDER
-        UAY = gleno_center - elb_center
-        UAX = cross(UAY, -elb_axis)  # / la.norm(elb_axis)  # - UAZ_offset
-        UAZ = cross(UAX, UAY)
-        UAE = normalize(transpose(matrix([UAX, UAY, UAZ])))
-
-        # ELBOW
-        LAY = LApY
-        LAX = cross(LAY, wrist_axis)
-        LAZ = cross(LAX, LAY)
-        LAE = normalize(transpose(matrix([LAX, LAY, LAZ])))
-        # LAE = t_elbow[0:3][:, 0:3]
-
-        # HAND
-        handY = wrist_center - hand_origin
-        handX = cross(handY, wrist_axis)
-        handZ = cross(handX, handY)
-        handE = normalize(transpose(matrix([handX, handY, handZ])))
-
-        
-        pelvis_euler    = euler_from_matrix(t_pelvis.linear(), 'rxyz')
-        torso_euler     = array([0.]*3)
-        shoulder_euler  = euler_from_matrix(
-            t_offset * r_shoulder.linear(), 'ryxy')
-        shoulder_euler  = array([0.]*3) 
-        elbow_euler     = array([0.]*3) # euler_from_matrix(r_elbow.linear(), 'rxyz')
-        wrist_euler     = array([0.]*3) # euler_from_matrix(r_wrist.linear(), 'rxyz')
-
-        # matrix([[-1.0, 0.0, 0.0], [0.0, 0.0, 1], [0.0, 1.0, 0.0]])
-
         # Expresses the shoulder center in
         # in the torso frame.
-        t_torso_inv = Affine3d(la.inv(t_torso.matrix()))
-        shoulder_center = t_torso_inv * r_shoulder.translation
+        t_torso_inv = la.inv(t_torso.matrix())
+        shoulder_in_pelvis = Affine3d(t_p_inv) * r_shoulder.translation
+        shoulder_center = Affine3d(t_torso_inv) * shoulder_in_pelvis
         
         d_r_shoulder_to_elbow = la.norm(
             r_shoulder.translation - 
@@ -95,6 +71,57 @@ class BioMotiveIk():
             r_elbow.translation - 
             r_wrist.translation)
 
+        # SHOULDER
+        r_shoulder_l = (
+            t_pelvis.linear() *
+            rodrigues([pi/2, 0, 0]) )
+
+        shoulder_tmp = r_shoulder.linear()
+        shoulder_tmp[:, 0] = r_shoulder.linear()[:, 2]
+        shoulder_tmp[:, 2] = r_shoulder.linear()[:, 1]
+        shoulder_tmp[:, 1] = r_shoulder.linear()[:, 0]
+
+        UAE = r_shoulder_l.transpose() * shoulder_tmp
+
+        shoulder = Affine3d(
+            r_shoulder.translation,
+            quaternion_from_matrix( r_shoulder_l ))
+        self._frames_to_draw["bio_motive_shoulder"] = shoulder
+
+        torso = t_pelvis.matrix() * t_torso.matrix()
+        self._frames_to_draw["bio_motive_torso"] = Affine3d(torso)
+
+        # ELBOW
+        elbow_tmp = r_elbow.linear()
+        elbow_tmp[:, 0] = r_elbow.linear()[:, 1]
+        elbow_tmp[:, 1] = r_elbow.linear()[:, 0]
+        elbow_tmp[:, 2] = r_elbow.linear()[:, 2]
+
+        LAE = r_shoulder_l.transpose() * elbow_tmp
+
+        # HAND
+        wrist_tmp = r_wrist.linear()
+        wrist_tmp[:, 0] = r_wrist.linear()[:, 1]
+        wrist_tmp[:, 1] = r_wrist.linear()[:, 0]
+        wrist_tmp[:, 2] = r_wrist.linear()[:, 2]
+
+        handE =  r_shoulder_l.transpose() * wrist_tmp
+        
+        # ----------------------------------------------------------------
+        # Get eulers angles from matrices
+
+        pelvis_euler    = euler_from_matrix(t_pelvis.linear(), 'rxyz')
+        torso_euler     = array([0.]*3)
+
+        shoulder_euler  = euler_from_matrix(UAE, 'ryxy')
+
+        LA_about_UA     = UAE.transpose() * LAE
+        elbow_euler     = euler_from_matrix(LA_about_UA, 'rzxy')
+
+        hand_about_LA   = LAE.transpose() * handE
+        wrist_euler     = euler_from_matrix(hand_about_LA, 'rzxy')
+
+        # matrix([[-1.0, 0.0, 0.0], [0.0, 0.0, 1], [0.0, 1.0, 0.0]])
         q = self._q.copy()
         q["PelvisTransX"]       = t_pelvis.translation[0]
         q["PelvisTransY"]       = t_pelvis.translation[1]
@@ -111,7 +138,7 @@ class BioMotiveIk():
         q["rArmTrans"]          = d_r_shoulder_to_elbow
         q["rForeArmTrans"]      = d_r_elbow_to_wrist
         q["rShoulderY1"]        = shoulder_euler[0]
-        q["rShoulderX"]         = shoulder_euler[0]
+        q["rShoulderX"]         = shoulder_euler[1]
         q["rShoulderY2"]        = shoulder_euler[2]
         q["rElbowZ"]            = elbow_euler[0]
         q["rElbowX"]            = elbow_euler[1]

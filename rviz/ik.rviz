@@ -7,9 +7,10 @@ Panels:
         - /Global Options1
         - /RobotModel1
         - /TF1
+        - /TF1/Frames1
         - /Target1
-      Splitter Ratio: 0.5
-    Tree Height: 397
+      Splitter Ratio: 0.734848
+    Tree Height: 915
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -18,7 +19,7 @@ Panels:
       - /2D Nav Goal1
       - /Publish Point1
     Name: Tool Properties
-    Splitter Ratio: 0.588679016
+    Splitter Ratio: 0.588679
   - Class: rviz/Views
     Expanded:
       - /Current View1
@@ -38,7 +39,7 @@ Visualization Manager:
       Color: 160; 160; 164
       Enabled: true
       Line Style:
-        Line Width: 0.0299999993
+        Line Width: 0.03
         Value: Lines
       Name: Grid
       Normal Cell Count: 0
@@ -50,7 +51,7 @@ Visualization Manager:
       Plane Cell Count: 10
       Reference Frame: <Fixed Frame>
       Value: true
-    - Alpha: 0.600000024
+    - Alpha: 0.6
       Class: rviz/RobotModel
       Collision Enabled: false
       Enabled: true
@@ -335,8 +336,142 @@ Visualization Manager:
       Enabled: true
       Frame Timeout: 15
       Frames:
-        All Enabled: true
+        All Enabled: false
+        HeadDummyY:
+          Value: false
+        HeadDummyZ:
+          Value: false
+        PelvisBody:
+          Value: true
+        PelvisDummyRotX:
+          Value: false
+        PelvisDummyRotY:
+          Value: false
+        PelvisDummyTransX:
+          Value: false
+        PelvisDummyTransY:
+          Value: false
+        PelvisDummyTransZ:
+          Value: false
+        TorsoDummyX:
+          Value: false
+        TorsoDummyY:
+          Value: false
         TorsoDummyZ:
+          Value: false
+        base:
+          Value: false
+        bio_motive_shoulder:
+          Value: true
+        bio_motive_torso:
+          Value: false
+        head:
+          Value: false
+        joint0:
+          Value: false
+        joint14:
+          Value: false
+        joint21:
+          Value: false
+        joint28:
+          Value: false
+        joint35:
+          Value: false
+        joint42:
+          Value: false
+        joint49:
+          Value: false
+        joint56:
+          Value: false
+        joint63:
+          Value: false
+        joint7:
+          Value: true
+        joint70:
+          Value: false
+        joint77:
+          Value: false
+        joint84:
+          Value: true
+        lAnkleDummyX:
+          Value: false
+        lAnkleDummyY:
+          Value: false
+        lElbowDummy:
+          Value: false
+        lFemur:
+          Value: false
+        lFoot:
+          Value: false
+        lHand:
+          Value: false
+        lHipDummyX:
+          Value: false
+        lHipDummyY:
+          Value: false
+        lHumerus:
+          Value: false
+        lRadius:
+          Value: false
+        lShoulderDummyX:
+          Value: false
+        lShoulderDummyZ:
+          Value: false
+        lTibia:
+          Value: false
+        lTorsoDummyTransX:
+          Value: false
+        lTorsoDummyTransY:
+          Value: false
+        lTorsoDummyTransZ:
+          Value: false
+        lWristDummyX:
+          Value: false
+        lWristDummyY:
+          Value: false
+        rAnkleDummyX:
+          Value: false
+        rAnkleDummyY:
+          Value: false
+        rElbowDummy1:
+          Value: false
+        rElbowDummy2:
+          Value: false
+        rElbowDummy3:
+          Value: false
+        rFemur:
+          Value: false
+        rFoot:
+          Value: false
+        rHand:
+          Value: false
+        rHipDummyX:
+          Value: false
+        rHipDummyY:
+          Value: false
+        rHumerus:
+          Value: false
+        rRadius:
+          Value: false
+        rShoulderDummyX:
+          Value: false
+        rShoulderDummyY:
+          Value: true
+        rTibia:
+          Value: false
+        rTorsoDummyTransX:
+          Value: false
+        rTorsoDummyTransY:
+          Value: false
+        rTorsoDummyTransZ:
+          Value: false
+        rWristDummy1:
+          Value: false
+        rWristDummy2:
+          Value: false
+        rWristDummy3:
+          Value: false
+        shoulder:
           Value: true
         torso:
           Value: true
@@ -346,7 +481,97 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        {}
+        base:
+          PelvisDummyTransX:
+            PelvisDummyTransY:
+              PelvisDummyTransZ:
+                PelvisDummyRotX:
+                  PelvisDummyRotY:
+                    PelvisBody:
+                      TorsoDummyX:
+                        TorsoDummyY:
+                          TorsoDummyZ:
+                            lTorsoDummyTransX:
+                              lTorsoDummyTransY:
+                                lTorsoDummyTransZ:
+                                  {}
+                            rTorsoDummyTransX:
+                              rTorsoDummyTransY:
+                                rTorsoDummyTransZ:
+                                  rShoulderDummyX:
+                                    rShoulderDummyY:
+                                      rHumerus:
+                                        rElbowDummy1:
+                                          rElbowDummy2:
+                                            rElbowDummy3:
+                                              rRadius:
+                                                rWristDummy1:
+                                                  rWristDummy2:
+                                                    rWristDummy3:
+                                                      rHand:
+                                                        {}
+                            torso:
+                              HeadDummyZ:
+                                HeadDummyY:
+                                  head:
+                                    {}
+                              lShoulderDummyX:
+                                lShoulderDummyZ:
+                                  lHumerus:
+                                    lElbowDummy:
+                                      lRadius:
+                                        lWristDummyX:
+                                          lWristDummyY:
+                                            lHand:
+                                              {}
+                      lHipDummyX:
+                        lHipDummyY:
+                          lFemur:
+                            lTibia:
+                              lAnkleDummyX:
+                                lAnkleDummyY:
+                                  lFoot:
+                                    {}
+                      rHipDummyX:
+                        rHipDummyY:
+                          rFemur:
+                            rTibia:
+                              rAnkleDummyX:
+                                rAnkleDummyY:
+                                  rFoot:
+                                    {}
+          bio_motive_shoulder:
+            {}
+          bio_motive_torso:
+            {}
+          joint0:
+            {}
+          joint14:
+            {}
+          joint21:
+            {}
+          joint28:
+            {}
+          joint35:
+            {}
+          joint42:
+            {}
+          joint49:
+            {}
+          joint56:
+            {}
+          joint63:
+            {}
+          joint7:
+            {}
+          joint70:
+            {}
+          joint77:
+            {}
+          joint84:
+            {}
+          shoulder:
+            {}
       Update Interval: 0
       Value: true
     - Class: rviz/Marker
@@ -360,7 +585,6 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 190; 190; 190
-    Default Light: true
     Fixed Frame: base
     Frame Rate: 30
   Name: root
@@ -382,33 +606,30 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.2606101
+      Distance: 1.42985
       Enable Stereo Rendering:
-        Stereo Eye Separation: 0.0599999987
+        Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.0173281003
-        Y: -0.0601807982
-        Z: -0.0184122995
-      Focal Shape Fixed Size: true
-      Focal Shape Size: 0.0500000007
-      Invert Z Axis: false
+        X: -0.00792016
+        Y: 0.337927
+        Z: 1.20633
       Name: Current View
-      Near Clip Distance: 0.00999999978
-      Pitch: 0.769801021
+      Near Clip Distance: 0.01
+      Pitch: 0.674797
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 5.58686018
+      Yaw: 0.777309
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 684
+  Height: 1216
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd00000004000000000000017c0000021cfc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006100fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c00610079007301000000280000021c000000d700fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c0000026100000001000001130000021cfc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a0056006900650077007301000000280000021c000000ad00fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000055900000044fc0100000002fb0000000800540069006d00650100000000000005590000030000fffffffb0000000800540069006d00650100000000000004500000000000000000000002be0000021c00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000400000000000001d10000042bfc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006800fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c00610079007301000000280000042b000000e600fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c0000026100000001000001130000042bfc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a0056006900650077007301000000280000042b000000be00fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000098200000044fc0100000002fb0000000800540069006d00650100000000000009820000038800fffffffb0000000800540069006d00650100000000000004500000000000000000000006920000042b00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -417,6 +638,6 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: false
-  Width: 1369
-  X: 73
-  Y: 35
+  Width: 2434
+  X: 71
+  Y: 15

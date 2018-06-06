@@ -44,6 +44,7 @@ def publish_hdf5_file(filename, with_joint_state):
         if with_joint_state:
             q = motive_ik.joint_state(frame)
             publish_joint_state(js_pub, q)
+            publish_transforms(br, motive_ik.frame_to_draw())
         if i % 400 == 0:
             print "progress : {} %".format(float(i) / float(data.nb_frames()))
         rate.sleep()

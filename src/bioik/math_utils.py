@@ -90,7 +90,7 @@ class Affine3d:
 
     def __mul__(self, p):
         p_mat = numpy.mat(numpy.concatenate((p, [1]))).transpose()
-        return self.matrix() * p_mat
+        return numpy.squeeze(numpy.asarray(self.matrix() * p_mat)[:3])
 
     def __str__(self):
         ss = "Transform :\n"
