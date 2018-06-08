@@ -20,19 +20,20 @@
 from mocap_interface import *
 import argparse
 
+
 def test_interface():
     parser = argparse.ArgumentParser(description='Test mocap data so far.')
     parser.add_argument('--file', dest='filepath', type=str,
-        default="../../../mocap-mlr/interpolated/mocap_data_1517838370.hdf5")
+                        default="../../../mocap-mlr/interpolated/mocap_data_1517838370.hdf5")
     args = parser.parse_args()
     mocap_data = HumanMocapData(args.filepath)
-    hz=120
+    hz = 120
     print "Mocap Data"
     print " - filepath : ", args.filepath
     print " - nb_frames : ", mocap_data.nb_frames()
     print " - Hz : ", hz
-    print " - dt : ", 1./hz
-    print " - duration : {} min".format(mocap_data.nb_frames() * 1./(60.*hz))
+    print " - dt : ", 1. / hz
+    print " - duration : {} min".format(mocap_data.nb_frames() * 1. / (60. * hz))
 
     for i in range(2000, 2100, 30):
         frame = mocap_data.frame(i)

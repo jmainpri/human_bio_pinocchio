@@ -39,6 +39,7 @@ def load_data_from_file():
             trajectories.append(f["trajectories_{:04d}".format(i)][:])
     return configurations, points, trajectories
 
+
 def query_yes_no(question):
     """Ask a yes/no question via raw_input() and return their answer.
 
@@ -65,6 +66,7 @@ def query_yes_no(question):
             sys.stdout.write("Please respond with 'yes', 'no' or 'quit' "
                              "(or 'y', 'n' or 'q').\n")
 
+
 def publish_joint_state(publisher, robot, q):
     joint_state = JointState()
     joint_state.header.stamp = rospy.Time().now()
@@ -76,6 +78,7 @@ def publish_joint_state(publisher, robot, q):
         joint_state.name.append(name)
         joint_state.position.append(q[idx])
     publisher.publish(joint_state)
+
 
 def publish_target(publisher, p):
     marker = Marker()
@@ -98,23 +101,24 @@ def publish_target(publisher, p):
     marker.color.b = 0.0
     publisher.publish(marker)
 
+
 def publish_trajecories(urdf_path, configurations, trajectories, targets):
     idx = 0
     robot = se3.RobotWrapper(urdf_path)
     trajectory_pub = rospy.Publisher('/joint_states', JointState)
-    target_pub = rospy.Publisher("/target", Marker, queue_size = 100)
+    target_pub = rospy.Publisher("/target", Marker, queue_size=100)
 
     while idx < len(trajectories):
         trajectory = trajectories[idx]
         print "targets[idx] : ", targets[idx].transpose()
         publish_target(target_pub, targets[idx])
         publish_joint_state(trajectory_pub, robot, configurations[idx])
-        time.sleep(1.) # play for 1 seconds
+        time.sleep(1.)  # play for 1 seconds
         query_yes_no("Continue")
         for q in trajectory:
             publish_target(target_pub, targets[idx])
             publish_joint_state(trajectory_pub, robot, q)
-            time.sleep(2./float(len(trajectory))) # play for 2 seconds
+            time.sleep(2. / float(len(trajectory)))  # play for 2 seconds
         answer = query_yes_no("Replay trajectory")
         if answer == 'q':
             break
@@ -125,15 +129,15 @@ def publish_trajecories(urdf_path, configurations, trajectories, targets):
 if __name__ == '__main__':
 
     parser = optparse.OptionParser("usage: %prog [options] arg1 arg2")
-    parser.add_option('--robot', 
-        default=False, type="int", dest='robot',
-        help='Play planar robot')
+    parser.add_option('--robot',
+                      default=False, type="int", dest='robot',
+                      help='Play planar robot')
     (options, args) = parser.parse_args()
 
-    urdf_path=utils.human_urdf_path()
+    urdf_path = utils.human_urdf_path()
     if options.robot:
-         urdf_path="../urdf/r2_robot.urdf"
-   
+        urdf_path = "../urdf/r2_robot.urdf"
+
     rospy.init_node('human_bio_pinnochio_ik_player')
 
     configurations, targets, trajectories = load_data_from_file()

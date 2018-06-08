@@ -14,7 +14,7 @@
 # OTHER TORTIOUS ACTION,   ARISING OUT OF OR IN    CONNECTION WITH THE USE   OR
 # PERFORMANCE OF THIS SOFTWARE.
 #
-#                                            Jim Mainprice on Tuesday Aug 5 2014
+# Jim Mainprice on Tuesday Aug 5 2014
 
 # Code adapted from KAREN TROY's code
 
@@ -24,6 +24,7 @@ from numpy import linalg as la
 from transform_matrix import *
 from rodrigues import *
 from copy import deepcopy
+
 
 class BioHumanIk():
 
@@ -41,18 +42,20 @@ class BioHumanIk():
         # Construct frame centered at torso with orientation
         # set by the pelvis frame, add rotation offset for matlab code
 
-        trunk_center = (markers[0] + markers[1])/2
+        trunk_center = (markers[0] + markers[1]) / 2
 
         self.t_trans = deepcopy(t_pelvis)
         self.t_trans[0:3, 3] = transpose(matrix(trunk_center))
-        self.t_trans = self.t_trans * MakeTransform(rodrigues([0, 0, pi]), matrix([0, 0, 0]))
+        self.t_trans = self.t_trans * \
+            MakeTransform(rodrigues([0, 0, pi]), matrix([0, 0, 0]))
 
         inv_t_trans = la.inv(self.t_trans)
 
-        points_3d = len(markers)*[array([0., 0., 0.])]
+        points_3d = len(markers) * [array([0., 0., 0.])]
 
         for i, p in enumerate(markers):
-            points_3d[i] = array(array(inv_t_trans).dot(array(append(p, 1.0))))[0:3]
+            points_3d[i] = array(array(inv_t_trans).dot(
+                array(append(p, 1.0))))[0:3]
             # points_3d[i] *= 1000
 
         return points_3d
@@ -81,15 +84,16 @@ class BioHumanIk():
 
         # TORSO
         trunk_origin = markers[1]
-        xyphoid_T8 = markers[0]     - markers[1]
-        trunk_center = markers[0]   - 0.5*xyphoid_T8  # torso_origin
-        C7_sternal = markers[2]     - markers[3]
-        c7s_midpt = markers[3]      + 0.5*C7_sternal
+        xyphoid_T8 = markers[0] - markers[1]
+        trunk_center = markers[0] - 0.5 * xyphoid_T8  # torso_origin
+        C7_sternal = markers[2] - markers[3]
+        c7s_midpt = markers[3] + 0.5 * C7_sternal
 
         # SHOULDER
         fixedz = markers[4][2]  # - 10  # 10 -> 1 cm
         acromion = array([markers[4][0], markers[4][1], fixedz])
-        gleno_center = array([acromion[0], acromion[1], markers[5][2]])  # p_shoulder_center
+        # p_shoulder_center
+        gleno_center = array([acromion[0], acromion[1], markers[5][2]])
 
         if not self.use_elbow_pads:
 
@@ -114,13 +118,14 @@ class BioHumanIk():
             wrist_center = markers[6] + 0.5 * wrist_axis  # p_wrist_center
             UlnStylPro = markers[6] + 10 * wrist_axis / la.norm(wrist_axis)
             LApY = elb_center - wrist_center  # UlnStylPro
-            hand_origin = markers[8] - array([0.0, 0.0, 0.04]) # TODO perform offset in wrist frame
+            # TODO perform offset in wrist frame
+            hand_origin = markers[8] - array([0.0, 0.0, 0.04])
 
         # --------------------------------------------------------------------
         # Define matrices
 
         # TRUNK
-        trunkY = c7s_midpt-trunk_center
+        trunkY = c7s_midpt - trunk_center
         trunkZ = cross(trunkY, xyphoid_T8)
         trunkX = cross(trunkY, trunkZ)
         trunkX *= - 1.0
@@ -182,30 +187,31 @@ class BioHumanIk():
         trunk_about_glob = la.inv(globalE) * trunkE
         trunk_about_glob = normalize(trunk_about_glob)
         tr_a = euler_from_matrix(trunk_about_glob, 'rxzy')
-        tr_a = tr_a * 180/math.pi
+        tr_a = tr_a * 180 / math.pi
 
         UA_about_trunk = la.inv(trunkE) * UAE
         UA_about_trunk = normalize(UA_about_trunk)
         sh_a = euler_from_matrix(UA_about_trunk, 'ryxy')
-        sh_a = sh_a * 180/math.pi
+        sh_a = sh_a * 180 / math.pi
 
         LA_about_UA = la.inv(UAE) * LAE
         LA_about_UA = normalize(LA_about_UA)
         elb_a = euler_from_matrix(LA_about_UA, 'rzxy')
-        elb_a = elb_a * 180/math.pi
+        elb_a = elb_a * 180 / math.pi
 
         # calculate euler angles for the wrist
         # wrist_a = array([0., 0., -0.])
         hand_about_LA = la.inv(LAE) * handE
         hand_about_LA = normalize(hand_about_LA)
         wrist_a = euler_from_matrix(hand_about_LA, 'rzxy')
-        wrist_a = wrist_a * 180/math.pi
+        wrist_a = wrist_a * 180 / math.pi
 
         if not self.compute_left_arm:
 
             # -----------------------------------------------------------------
             # Pack arm configuration in degrees
-            q = array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+            q = array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
             q[0] = 0
             q[1] = tr_a[0]
             q[2] = tr_a[1]
@@ -246,7 +252,8 @@ class BioHumanIk():
             # SHOULDER
             fixedz = markers[11][2]  # - 10  # 10 -> 1 cm
             acromion = array([markers[11][0], markers[11][1], fixedz])
-            gleno_center = array([acromion[0], acromion[1], markers[12][2]])  # p_shoulder_center
+            # p_shoulder_center
+            gleno_center = array([acromion[0], acromion[1], markers[12][2]])
 
             if not self.use_elbow_pads:
 
@@ -258,7 +265,8 @@ class BioHumanIk():
                 # HAND
                 wrist_axis = markers[16] - markers[15]
                 wrist_center = markers[15] + 0.5 * wrist_axis  # p_wrist_center
-                UlnStylPro = markers[15] + 10 * wrist_axis / la.norm(wrist_axis)
+                UlnStylPro = markers[15] + 10 * \
+                    wrist_axis / la.norm(wrist_axis)
                 LApY = elb_center - wrist_center  # UlnStylPro
                 hand_origin = markers[17]  # - array([0.0, 0.0, 40.0])
 
@@ -270,9 +278,11 @@ class BioHumanIk():
                 # HAND
                 wrist_axis = markers[14] - markers[13]
                 wrist_center = markers[13] + 0.5 * wrist_axis  # p_wrist_center
-                UlnStylPro = markers[13] + 10 * wrist_axis / la.norm(wrist_axis)
+                UlnStylPro = markers[13] + 10 * \
+                    wrist_axis / la.norm(wrist_axis)
                 LApY = elb_center - wrist_center  # UlnStylPro
-                hand_origin = markers[15] - array([0.0, 0.0, 0.04]) # TODO perform offset in wrist frame
+                # TODO perform offset in wrist frame
+                hand_origin = markers[15] - array([0.0, 0.0, 0.04])
 
             # ----------------------------------------------------------------
             # Define matrices
@@ -301,10 +311,12 @@ class BioHumanIk():
             handE = normalize(transpose(matrix([handX, handY, handZ])))
 
             # Store matrices for drawing
-            self.trunkEl = self.t_trans * MakeTransform(trunkE, matrix(trunk_center))
+            self.trunkEl = self.t_trans * \
+                MakeTransform(trunkE, matrix(trunk_center))
             self.UAEl = self.t_trans * MakeTransform(UAE, matrix(gleno_center))
             self.LAEl = self.t_trans * MakeTransform(LAE, matrix(elb_center))
-            self.handEl = self.t_trans * MakeTransform(handE, matrix(wrist_center))
+            self.handEl = self.t_trans * \
+                MakeTransform(handE, matrix(wrist_center))
 
             # ----------------------------------------------------------------
             # Translations
@@ -314,12 +326,15 @@ class BioHumanIk():
 
             # Get shoulder center in the torso frame
             # get it the global frame then compute the torso frame
-            inv_torso = la.inv(matrix(MakeTransform(trunkE, matrix([0., 0., 0.]))))
-            d_l_torso = array(array(inv_torso).dot(append((gleno_center), 1)))[0:3]
+            inv_torso = la.inv(
+                matrix(MakeTransform(trunkE, matrix([0., 0., 0.]))))
+            d_l_torso = array(array(inv_torso).dot(
+                append((gleno_center), 1)))[0:3]
 
             # ----------------------------------------------------------------
             # Global frame
-            globalE = matrix([[-1.0, 0.0, 0.0], [0.0, 0.0, 1], [0.0, 1.0, 0.0]])
+            globalE = matrix(
+                [[-1.0, 0.0, 0.0], [0.0, 0.0, 1], [0.0, 1.0, 0.0]])
             # this is simply a reflection of how our subjects were positioned relative to global
             # globalE=[1 0 0; 0 0 1; 0 -1 0]; # change for points defined in pelvis frame
             # globalE=[0 1 0; 0 0 1; 1 0 0]
@@ -330,23 +345,23 @@ class BioHumanIk():
             UA_about_trunk = la.inv(trunkE) * UAE
             UA_about_trunk = normalize(UA_about_trunk)
             l_sh_a = euler_from_matrix(UA_about_trunk, 'ryxy')
-            l_sh_a = l_sh_a * 180/math.pi
+            l_sh_a = l_sh_a * 180 / math.pi
 
             LA_about_UA = la.inv(UAE) * LAE
             LA_about_UA = normalize(LA_about_UA)
             l_elb_a = euler_from_matrix(LA_about_UA, 'rzxy')
-            l_elb_a = l_elb_a * 180/math.pi
+            l_elb_a = l_elb_a * 180 / math.pi
 
             # calculate euler angles for the wrist
             # wrist_a = array([0., 0., -0.])
             hand_about_LA = la.inv(LAE) * handE
             hand_about_LA = normalize(hand_about_LA)
             l_wrist_a = euler_from_matrix(hand_about_LA, 'rzxy')
-            l_wrist_a = l_wrist_a * 180/math.pi
+            l_wrist_a = l_wrist_a * 180 / math.pi
 
             # ----------------------------------------------------------------
             # Pack arm configuration in degrees
-            q = array([0.0]*22)
+            q = array([0.0] * 22)
 
             q[0] = 0
 
@@ -375,4 +390,3 @@ class BioHumanIk():
             q[21] = l_wrist_a[2]
 
             return [q, d_r_torso, d_r_shoulder_elbow, d_r_elbow_wrist, d_l_torso, d_l_shoulder_elbow, d_l_elbow_wrist]
-

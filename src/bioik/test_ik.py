@@ -104,7 +104,8 @@ class TestBioHumanIk(BioHumanIk):
         self.human = self.env.GetRobots()[0]
 
         # Get pelvis torso offset and set human to position
-        self.offset_pelvis_torso_init = self.human.GetJoint("TorsoX").GetHierarchyChildLink().GetTransform()[0:3, 3]
+        self.offset_pelvis_torso_init = self.human.GetJoint(
+            "TorsoX").GetHierarchyChildLink().GetTransform()[0:3, 3]
 
         self.handles = []
 
@@ -131,10 +132,11 @@ class TestBioHumanIk(BioHumanIk):
 
         inv_torso = la.inv(t_0)
 
-        points_3d = len(self.markers)*[array([0, 0, 0])]
+        points_3d = len(self.markers) * [array([0, 0, 0])]
 
         for i, p in enumerate(self.markers):
-            points_3d[i] = array(array(inv_torso).dot(array(append(p, 1.0))))[0:3]
+            points_3d[i] = array(array(inv_torso).dot(
+                array(append(p, 1.0))))[0:3]
 
         return points_3d
 
@@ -148,7 +150,8 @@ class TestBioHumanIk(BioHumanIk):
             # set by the pelvis frame, add rotation offset for matlab code
             t_trans = deepcopy(self.t_pelvis)
             t_trans[0:3, 3] = deepcopy(self.t_torso[0:3, 3])
-            t_trans = t_trans * MakeTransform(rodrigues([0, 0, pi]), matrix([0, 0, 0]))
+            t_trans = t_trans * \
+                MakeTransform(rodrigues([0, 0, pi]), matrix([0, 0, 0]))
 
             # inv_pelvis = la.inv(self.t_pelvis)
             # self.handles.append(misc.DrawAxes(self.env, inv_pelvis * t_trans, 2))
@@ -159,9 +162,9 @@ class TestBioHumanIk(BioHumanIk):
 
                 marker = array(array(t_trans).dot(append(marker, 1)))[0:3]
 
-                line_str += str(marker[0]*1000) + ','
-                line_str += str(marker[1]*1000) + ','
-                line_str += str(marker[2]*1000) + ','
+                line_str += str(marker[0] * 1000) + ','
+                line_str += str(marker[1] * 1000) + ','
+                line_str += str(marker[2] * 1000) + ','
 
             line_str = line_str.rstrip(',')
             line_str += '\n'
@@ -175,9 +178,11 @@ class TestBioHumanIk(BioHumanIk):
         # print "t_pelvis[3:7] ", t_pelvis[3:7]
         # print "t_pelvis[0:3] ", t_pelvis[0:3]
 
-        mat = MakeTransform(rotationMatrixFromQuat(array(t_pelvis[3:7])), matrix(t_pelvis[0:3]))
+        mat = MakeTransform(rotationMatrixFromQuat(
+            array(t_pelvis[3:7])), matrix(t_pelvis[0:3]))
 
-        new_x = -array(transpose(mat[:, 2]).tolist()[0][:3])  # get z vector from matrix
+        # get z vector from matrix
+        new_x = -array(transpose(mat[:, 2]).tolist()[0][:3])
         new_x[2] = 0
         new_x /= la.norm(new_x)
 
@@ -196,10 +201,11 @@ class TestBioHumanIk(BioHumanIk):
         # Compute the offset between the trunk and the pelvis
         # the offset_pelvis_torso_init is hard coded and the human model
 
-        trunk_center = (self.markers[0] + self.markers[1])/2
+        trunk_center = (self.markers[0] + self.markers[1]) / 2
 
         inv_pelvis = la.inv(self.t_pelvis)
-        trunk_center = array(array(inv_pelvis).dot(append(trunk_center, 1)))[0:3]
+        trunk_center = array(array(inv_pelvis).dot(
+            append(trunk_center, 1)))[0:3]
 
         self.offset_pelvis_torso = trunk_center
         self.offset_pelvis_torso -= self.offset_pelvis_torso_init
@@ -227,10 +233,12 @@ class TestBioHumanIk(BioHumanIk):
     def compute_dist_to_points(self, frame_id=0):
 
         # Get joint centers
-        p_torso_origin = (self.markers[0] + self.markers[1])/2
-        p_shoulder_center = array([self.markers[4][0], self.markers[4][1], self.markers[5][2]])
-        p_elbow_center = (self.markers[6] + self.markers[7])/2
-        p_wrist_center = (self.markers[9] - self.markers[8])/2 + self.markers[8]
+        p_torso_origin = (self.markers[0] + self.markers[1]) / 2
+        p_shoulder_center = array(
+            [self.markers[4][0], self.markers[4][1], self.markers[5][2]])
+        p_elbow_center = (self.markers[6] + self.markers[7]) / 2
+        p_wrist_center = (self.markers[9] -
+                          self.markers[8]) / 2 + self.markers[8]
 
         # Get the points in the global frame
         # inv_pelvis = la.inv(self.t_pelvis)
@@ -259,14 +267,16 @@ class TestBioHumanIk(BioHumanIk):
                 dist = la.norm(p_link - p1)
                 print "dist shoulder : ", dist
             if j.GetName() == "rElbowZ":
-                self.handles.append(self.env.plot3(p_link, pointsize=0.02, colors=array([0, 0, 0]), drawstyle=1))
+                self.handles.append(self.env.plot3(
+                    p_link, pointsize=0.02, colors=array([0, 0, 0]), drawstyle=1))
                 dist = la.norm(p_link - p2)
                 print "dist elbow : ", dist
             if j.GetName() == "rWristX":
-                self.handles.append(self.env.plot3(p_link, pointsize=0.02, colors=array([0, 0, 0]), drawstyle=1))
+                self.handles.append(self.env.plot3(
+                    p_link, pointsize=0.02, colors=array([0, 0, 0]), drawstyle=1))
                 dist = la.norm(p_link - p3)
                 print "dist wrist : ", dist
-            #if j.GetName() == "rShoulderZ":
+            # if j.GetName() == "rShoulderZ":
             #    self.handles.append(misc.DrawAxes(self.env, j.GetHierarchyChildLink().GetTransform(), 0.3))
 
         # for j in self.human.GetJoints():
@@ -274,9 +284,12 @@ class TestBioHumanIk(BioHumanIk):
         #         t_link = j.GetHierarchyChildLink().GetTransform()
         #         self.handles.append(misc.DrawAxes(self.env, t_link, 0.3))
 
-        self.handles.append(self.env.plot3(p1, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
-        self.handles.append(self.env.plot3(p2, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
-        self.handles.append(self.env.plot3(p3, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
+        self.handles.append(self.env.plot3(
+            p1, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
+        self.handles.append(self.env.plot3(
+            p2, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
+        self.handles.append(self.env.plot3(
+            p3, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
 
         # self.handles.append(misc.DrawAxes(self.env, self.human.GetJoint("TorsoZ").GetHierarchyChildLink().GetTransform(), 1))
         # self.handles.append(misc.DrawAxes(self.env, self.human.GetJoint("zTorsoTrans").GetHierarchyChildLink().GetTransform(), 1))
@@ -289,7 +302,9 @@ class TestBioHumanIk(BioHumanIk):
         # self.handles.append(misc.DrawAxes(self.env, eye(4), 2))
         # self.handles.append(misc.DrawAxes(self.env, self.t_pelvis, 2))
 
-        # print "joint : ", self.human.GetJoint("zTorsoTrans").GetHierarchyChildLink().GetTransform()[0:3, 3]
+        # print "joint : ",
+        # self.human.GetJoint("zTorsoTrans").GetHierarchyChildLink().GetTransform()[0:3,
+        # 3]
 
         self.handles.append(misc.DrawAxes(self.env, self.trunkE, .2))
         self.handles.append(misc.DrawAxes(self.env, self.UAE, .2))
@@ -311,11 +326,12 @@ class TestBioHumanIk(BioHumanIk):
         colors = []
         nb_points = len(points)
         for n in linspace(0.0, 1.0, num=nb_points):
-            colors.append((float(n)*1, (1-float(n))*1, 0))
+            colors.append((float(n) * 1, (1 - float(n)) * 1, 0))
 
         points_3d = squeeze(points)
 
-        self.handles.append(self.env.plot3(points=points_3d, pointsize=0.02, colors=array(colors), drawstyle=1))
+        self.handles.append(self.env.plot3(
+            points=points_3d, pointsize=0.02, colors=array(colors), drawstyle=1))
 
         q_cur = self.get_human_configuration(config)
         self.human.SetDOFValues(q_cur[0:self.human.GetDOF()])

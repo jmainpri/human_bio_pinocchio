@@ -19,17 +19,18 @@ class PlayFile():
         self.env.Load("../../ormodels/humans_bio_env.xml")
         self.humans = self.env.GetRobots()
         self.handles = []
-        t_cam = array([[ -0.662516847837, 0.365861186797, -0.653618404214, 3.09212255478] , \
-                        [ 0.748220341461, 0.282254919974, -0.600415256947, 2.43832302094] , \
-                        [ -0.0351816281021, -0.886835809012, -0.46074342198, 2.15959310532] , \
-                        [ 0.0, 0.0, 0.0, 1.0]])
+        t_cam = array([[-0.662516847837, 0.365861186797, -0.653618404214, 3.09212255478],
+                       [0.748220341461, 0.282254919974, -
+                           0.600415256947, 2.43832302094],
+                       [-0.0351816281021, -0.886835809012, -
+                           0.46074342198, 2.15959310532],
+                       [0.0, 0.0, 0.0, 1.0]])
         self.env.GetViewer().SetCamera(t_cam)
 
         self.traj_human1 = []
         self.traj_human2 = []
 
         self.change_color_human()
-
 
     def change_color_human(self):
 
@@ -38,18 +39,20 @@ class PlayFile():
 
         links = []
         for jIdx, j in enumerate(self.humans[1].GetJoints()):
-            # print "%s, \t%.3f, \t%.3f" % (j.GetName(), j.GetLimits()[0], j.GetLimits()[1])
+            # print "%s, \t%.3f, \t%.3f" % (j.GetName(), j.GetLimits()[0],
+            # j.GetLimits()[1])
             l = j.GetFirstAttached()
-            if l is not None : links.append(l)
+            if l is not None:
+                links.append(l)
             l = j.GetSecondAttached()
-            if l is not None : links.append(l)
+            if l is not None:
+                links.append(l)
 
         for l in links:
             for g in l.GetGeometries():
                 print g.GetDiffuseColor()
                 if set(g.GetDiffuseColor()) & set([0.80000001, 0., 0.01]):
                     g.SetDiffuseColor([0., 0., 0.8])
-
 
     def print_view(self):
 
@@ -70,21 +73,21 @@ class PlayFile():
 
         print line_str
 
-
     def load_files(self, h1_filepath, h2_filepath):
-        
+
         print "Trying to open file"
 
         # Parse CSV files
         with open(h1_filepath, 'r') as h1_file:
             with open(h2_filepath, 'r') as h2_file:
-                self.traj_human1 = [row for row in csv.reader(h1_file, delimiter=',')]
-                self.traj_human2 = [row for row in csv.reader(h2_file, delimiter=',')]
+                self.traj_human1 = [
+                    row for row in csv.reader(h1_file, delimiter=',')]
+                self.traj_human2 = [
+                    row for row in csv.reader(h2_file, delimiter=',')]
 
         # Convert to floats
         self.traj_human1 = [map(float, row) for row in self.traj_human1]
         self.traj_human2 = [map(float, row) for row in self.traj_human2]
-
 
     def play_skeleton(self):
         # for frame in self.frames:
@@ -94,12 +97,12 @@ class PlayFile():
 
         for row1, row2 in zip(self.traj_human1, self.traj_human2):
 
-            time.sleep(row1[0]*scale)
+            time.sleep(row1[0] * scale)
 
             del self.handles[:]
-           
-            self.humans[0].SetDOFValues(row1[1:self.humans[0].GetDOF()+1])
-            self.humans[1].SetDOFValues(row2[1:self.humans[1].GetDOF()+1])
+
+            self.humans[0].SetDOFValues(row1[1:self.humans[0].GetDOF() + 1])
+            self.humans[1].SetDOFValues(row2[1:self.humans[1].GetDOF() + 1])
 
 
 if __name__ == "__main__":

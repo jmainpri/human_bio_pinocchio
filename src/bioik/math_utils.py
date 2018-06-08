@@ -67,6 +67,7 @@ class Affine3d:
     """
     translation = None
     rotation = None
+
     def __init__(self, t, r=numpy.array([0., 0., 0., 1.])):
         if t.shape == (4, 4):
             self._set_matrix(t)
@@ -84,9 +85,9 @@ class Affine3d:
         return numpy.mat(quaternion_matrix(self.rotation))
 
     def matrix(self):
-        return numpy.bmat([[self.linear(), 
-            numpy.matrix(self.translation).transpose()],
-            [numpy.mat([0., 0., 0., 1.])]])
+        return numpy.bmat([[self.linear(),
+                            numpy.matrix(self.translation).transpose()],
+                           [numpy.mat([0., 0., 0., 1.])]])
 
     def __mul__(self, p):
         p_mat = numpy.mat(numpy.concatenate((p, [1]))).transpose()
@@ -95,12 +96,12 @@ class Affine3d:
     def __str__(self):
         ss = "Transform :\n"
         ss += " - translation (x = {:.4f}, y = {:.4f}, z = {:.4f})\n".format(
-            self.translation[0], 
-            self.translation[1], 
+            self.translation[0],
+            self.translation[1],
             self.translation[2])
         ss += " - rotation \
    (x = {:.4f}, y = {:.4f}, z = {:.4f}, w = {:.4f})\n".format(
-            self.rotation[0], self.rotation[1], 
+            self.rotation[0], self.rotation[1],
             self.rotation[2], self.rotation[3])
         return ss
 
@@ -120,11 +121,11 @@ def quaternion_matrix(quaternion):
 
     """
     # We assum the ROS convention (x, y, z, w)
-    quaternion_tmp = numpy.array([0.0]*4)
-    quaternion_tmp[1] = quaternion[0] # x
-    quaternion_tmp[2] = quaternion[1] # y
-    quaternion_tmp[3] = quaternion[2] # z
-    quaternion_tmp[0] = quaternion[3] # w
+    quaternion_tmp = numpy.array([0.0] * 4)
+    quaternion_tmp[1] = quaternion[0]  # x
+    quaternion_tmp[2] = quaternion[1]  # y
+    quaternion_tmp[3] = quaternion[2]  # z
+    quaternion_tmp[0] = quaternion[3]  # w
     q = numpy.array(quaternion_tmp, dtype=numpy.float64, copy=True)
     n = numpy.dot(q, q)
     if n < _EPS:
@@ -132,9 +133,9 @@ def quaternion_matrix(quaternion):
     q *= math.sqrt(2.0 / n)
     q = numpy.outer(q, q)
     return numpy.array([
-        [1.0-q[2, 2]-q[3, 3],     q[1, 2]-q[3, 0],     q[1, 3]+q[2, 0]],
-        [    q[1, 2]+q[3, 0], 1.0-q[1, 1]-q[3, 3],     q[2, 3]-q[1, 0]],
-        [    q[1, 3]-q[2, 0],     q[2, 3]+q[1, 0], 1.0-q[1, 1]-q[2, 2]]])
+        [1.0 - q[2, 2] - q[3, 3],     q[1, 2] - q[3, 0],     q[1, 3] + q[2, 0]],
+        [q[1, 2] + q[3, 0], 1.0 - q[1, 1] - q[3, 3],     q[2, 3] - q[1, 0]],
+        [q[1, 3] - q[2, 0],     q[2, 3] + q[1, 0], 1.0 - q[1, 1] - q[2, 2]]])
 
 
 def quaternion_from_matrix(matrix, isprecise=False):
@@ -209,10 +210,10 @@ def quaternion_from_matrix(matrix, isprecise=False):
         m21 = M[2, 1]
         m22 = M[2, 2]
         # symmetric matrix K
-        K = numpy.array([[m00-m11-m22, 0.0,         0.0,         0.0],
-                         [m01+m10,     m11-m00-m22, 0.0,         0.0],
-                         [m02+m20,     m12+m21,     m22-m00-m11, 0.0],
-                         [m21-m12,     m02-m20,     m10-m01,     m00+m11+m22]])
+        K = numpy.array([[m00 - m11 - m22, 0.0,         0.0,         0.0],
+                         [m01 + m10,     m11 - m00 - m22, 0.0,         0.0],
+                         [m02 + m20,     m12 + m21,     m22 - m00 - m11, 0.0],
+                         [m21 - m12,     m02 - m20,     m10 - m01,     m00 + m11 + m22]])
         K /= 3.0
         # quaternion is eigenvector of K that corresponds to largest eigenvalue
         w, V = numpy.linalg.eigh(K)
@@ -221,11 +222,11 @@ def quaternion_from_matrix(matrix, isprecise=False):
         numpy.negative(q, q)
 
     # We assume the ROS convention (x, y, z, w)
-    quaternion_tmp = numpy.array([0.0]*4)
-    quaternion_tmp[3] = q[0] # w
-    quaternion_tmp[0] = q[1] # x
-    quaternion_tmp[1] = q[2] # y
-    quaternion_tmp[2] = q[3] # z
+    quaternion_tmp = numpy.array([0.0] * 4)
+    quaternion_tmp[3] = q[0]  # w
+    quaternion_tmp[0] = q[1]  # x
+    quaternion_tmp[1] = q[2]  # y
+    quaternion_tmp[2] = q[3]  # z
     return quaternion_tmp
 
 
@@ -255,26 +256,26 @@ def euler_from_matrix(matrix, axes='sxyz'):
         firstaxis, parity, repetition, frame = axes
 
     i = firstaxis
-    j = _NEXT_AXIS[i+parity]
-    k = _NEXT_AXIS[i-parity+1]
+    j = _NEXT_AXIS[i + parity]
+    k = _NEXT_AXIS[i - parity + 1]
 
     M = numpy.array(matrix, dtype=numpy.float64, copy=False)[:3, :3]
     if repetition:
-        sy = math.sqrt(M[i, j]*M[i, j] + M[i, k]*M[i, k])
+        sy = math.sqrt(M[i, j] * M[i, j] + M[i, k] * M[i, k])
         if sy > _EPS:
-            ax = math.atan2( M[i, j],  M[i, k])
-            ay = math.atan2( sy,       M[i, i])
-            az = math.atan2( M[j, i], -M[k, i])
+            ax = math.atan2(M[i, j],  M[i, k])
+            ay = math.atan2(sy,       M[i, i])
+            az = math.atan2(M[j, i], -M[k, i])
         else:
             ax = math.atan2(-M[j, k],  M[j, j])
-            ay = math.atan2( sy,       M[i, i])
+            ay = math.atan2(sy,       M[i, i])
             az = 0.0
     else:
-        cy = math.sqrt(M[i, i]*M[i, i] + M[j, i]*M[j, i])
+        cy = math.sqrt(M[i, i] * M[i, i] + M[j, i] * M[j, i])
         if cy > _EPS:
-            ax = math.atan2( M[k, j],  M[k, k])
+            ax = math.atan2(M[k, j],  M[k, k])
             ay = math.atan2(-M[k, i],  cy)
-            az = math.atan2( M[j, i],  M[i, i])
+            az = math.atan2(M[j, i],  M[i, i])
         else:
             ax = math.atan2(-M[j, k],  M[j, j])
             ay = math.atan2(-M[k, i],  cy)
@@ -287,7 +288,7 @@ def euler_from_matrix(matrix, axes='sxyz'):
     return numpy.array([ax, ay, az])
 
 
-def rtocarda( R, i, j, k):
+def rtocarda(R, i, j, k):
 
     # RTOCARDA (Spacelib): Rotation  matrix  to Cardan or Eulerian angles.
     #
@@ -304,9 +305,9 @@ def rtocarda( R, i, j, k):
     # Related functions : MTOCARDA
     #
     # (c) G.Legnani, C. Moiola 1998; adapted from: G.Legnani and R.Adamini 1993
-    #___________________________________________________________________________
+    #_________________________________________________________________________
 
-    #spheader
+    # spheader
     #disp('got this far')
     # if ( i<X | i>Z | j<X | j>Z | k<X | k>Z | i==j | j==k )
     # 	error('Error in RTOCARDA: Illegal rotation axis ')
@@ -317,7 +318,7 @@ def rtocarda( R, i, j, k):
 
     # print "R : ", R
 
-    if (j-i+3) % 3 == 1:
+    if (j - i + 3) % 3 == 1:
         sig = 1  # ciclic
     else:
         sig = -1  # anti ciclic
@@ -328,34 +329,35 @@ def rtocarda( R, i, j, k):
         j -= 1
         k -= 1
 
-        a[0] = math.atan2(-sig*R[j, k], R[k, k])
-        a[1] = math.asin(sig*R[i, k])
-        a[2] = math.atan2(-sig*R[i, j], R[i, i])
+        a[0] = math.atan2(-sig * R[j, k], R[k, k])
+        a[1] = math.asin(sig * R[i, k])
+        a[2] = math.atan2(-sig * R[i, j], R[i, i])
 
-        b[0] = math.atan2(sig*R[j, k], -R[k, k])
-        b[1] = ((math.pi-math.asin(sig*R[i, k]) + math.pi) % 2*math.pi)-math.pi
-        b[2] = math.atan2(sig*R[i, j], -R[i, i])
+        b[0] = math.atan2(sig * R[j, k], -R[k, k])
+        b[1] = ((math.pi - math.asin(sig * R[i, k]) + math.pi) %
+                2 * math.pi) - math.pi
+        b[2] = math.atan2(sig * R[i, j], -R[i, i])
 
     else:  # Euleriana Convention
 
-        l = 6-i-j
+        l = 6 - i - j
 
         i -= 1
         j -= 1
         k -= 1
         l -= 1
 
-        a[0] = math.atan2(R[j, i], -sig*R[l, i])
+        a[0] = math.atan2(R[j, i], -sig * R[l, i])
         a[1] = math.acos(R[i, i])
-        a[2] = math.atan2(R[i, j], sig*R[i, l])
+        a[2] = math.atan2(R[i, j], sig * R[i, l])
 
-        b[0] = math.atan2(-R[j, i], sig*R[l, i])
+        b[0] = math.atan2(-R[j, i], sig * R[l, i])
         b[1] = -math.acos(R[i, i])
-        b[2] = math.atan2(-R[i, j], -sig*R[i, l])
+        b[2] = math.atan2(-R[i, j], -sig * R[i, l])
 
     # report in degrees instead of radians
-    a = a * 180/math.pi
-    b = b * 180/math.pi
+    a = a * 180 / math.pi
+    b = b * 180 / math.pi
 
     # print "a : ", a
     # print "b : ", b

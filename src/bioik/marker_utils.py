@@ -54,6 +54,7 @@ from numpy import linalg as la
 # Head              1
 # rElbow            2
 
+
 def remap_to_matlab(in_markers):
 
     out_markers = in_markers
@@ -96,16 +97,16 @@ def load_file(m_filepath, o_filepath):
         # Load Objects
         count = int(o_cells[2])
 
-        for i in range(3, count*9, 9):
+        for i in range(3, count * 9, 9):
             name = str(o_cells[i])
-            occluded = int(o_cells[i+1])
-            x = float(o_cells[i+2])
-            y = float(o_cells[i+3])
-            z = float(o_cells[i+4])
-            qx = float(o_cells[i+5])
-            qy = float(o_cells[i+6])
-            qz = float(o_cells[i+7])
-            qw = float(o_cells[i+8])
+            occluded = int(o_cells[i + 1])
+            x = float(o_cells[i + 2])
+            y = float(o_cells[i + 3])
+            z = float(o_cells[i + 4])
+            qx = float(o_cells[i + 5])
+            qy = float(o_cells[i + 6])
+            qz = float(o_cells[i + 7])
+            qw = float(o_cells[i + 8])
 
             objects.append(np.array([x, y, z, qx, qy, qz, qw]))
 
@@ -115,12 +116,12 @@ def load_file(m_filepath, o_filepath):
         count = int(m_cells[2])
 
         nb_seen = 0
-        for i in range(3, count*4, 4):
+        for i in range(3, count * 4, 4):
             id = nb_seen
             name = str(m_cells[i])
-            x = float(m_cells[i+1])
-            y = float(m_cells[i+2])
-            z = float(m_cells[i+3])
+            x = float(m_cells[i + 1])
+            y = float(m_cells[i + 2])
+            z = float(m_cells[i + 3])
             nb_seen += 1
 
             markers.append(np.array([x, y, z]))
@@ -133,4 +134,3 @@ def load_file(m_filepath, o_filepath):
 
     print "# configs loaded : " + str(len(frames_m))
     return [frames_m, frames_o]
-

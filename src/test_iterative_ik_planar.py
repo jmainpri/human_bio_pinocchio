@@ -25,11 +25,12 @@ from pinocchio_ik import *
 from iterative_ik import *
 import os
 
+
 class TestPlanarIterativeIk(PinocchioIterativeIk):
 
     def __init__(self):
         # active dofs indices
-        self.active_dofs=[0, 1]
+        self.active_dofs = [0, 1]
 
         PinocchioIterativeIk.__init__(
             self,
@@ -38,10 +39,9 @@ class TestPlanarIterativeIk(PinocchioIterativeIk):
             self.active_dofs)
 
 
-if __name__== "__main__":
+if __name__ == "__main__":
     test_iterative_ik = TestPlanarIterativeIk()
     data = test_iterative_ik.sample_configs()
     success = test_iterative_ik.run(data)
     test_iterative_ik.save_data_file(data)
-    print  "success : ", success
-
+    print "success : ", success

@@ -18,8 +18,8 @@
 #                                           Jim Mainprice on Monday May 5 2018
 
 from pinocchio.utils import *
-from pinocchio.explog import exp,log
-from numpy.linalg import pinv,norm
+from pinocchio.explog import exp, log
+from numpy.linalg import pinv, norm
 import pinocchio as se3
 import utils
 
@@ -29,7 +29,7 @@ q = human.q0
 print "shape of q : ", q.shape
 print "human : ", human
 for i in range(20):
-    q_rand=rand(q.shape)
+    q_rand = rand(q.shape)
     human.forwardKinematics(q_rand)
     p = human.data.oMi[human.index("rWristY")].translation
     print "p_{} : {}".format(i, p.transpose())

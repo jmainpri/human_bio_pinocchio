@@ -15,8 +15,8 @@ class TestBioHumanIk(BioHumanIk):
 
         BioHumanIk.__init__(self)
 
-        self.nb_humans      = 2
-        self.rarm_only      = True
+        self.nb_humans = 2
+        self.rarm_only = True
         self.use_elbow_pads = True
 
         self.handles = []
@@ -38,7 +38,8 @@ class TestBioHumanIk(BioHumanIk):
 
         if drawer is None:
 
-            self.drawer = Drawer(NB_MARKERS, self.nb_humans, self.use_elbow_pads, self.rarm_only)
+            self.drawer = Drawer(NB_MARKERS, self.nb_humans,
+                                 self.use_elbow_pads, self.rarm_only)
             self.env = self.drawer.env
 
             self.env.Load(self.environment_file)
@@ -50,12 +51,15 @@ class TestBioHumanIk(BioHumanIk):
             self.change_color_human()
 
             # Get torso offset
-            self.offset_pelvis_torso_init = self.humans[0].GetJoint("TorsoX").GetHierarchyChildLink().GetTransform()[0:3, 3]
+            self.offset_pelvis_torso_init = self.humans[0].GetJoint(
+                "TorsoX").GetHierarchyChildLink().GetTransform()[0:3, 3]
 
-            t_cam = array([[ -0.655253290114, -0.106306078558, 0.747891799297, -0.302201271057] , \
-                        [ -0.725788890663, 0.363116971923, -0.584274379801, 2.68592453003] , \
-                        [ -0.209460287369, -0.925659269042, -0.315089361376, 2.25037527084] , \
-                        [ 0.0, 0.0, 0.0, 1.0]])
+            t_cam = array([[-0.655253290114, -0.106306078558, 0.747891799297, -0.302201271057],
+                           [-0.725788890663, 0.363116971923, -
+                               0.584274379801, 2.68592453003],
+                           [-0.209460287369, -0.925659269042, -
+                               0.315089361376, 2.25037527084],
+                           [0.0, 0.0, 0.0, 1.0]])
             self.env.GetViewer().SetCamera(t_cam)
 
         else:
@@ -69,9 +73,12 @@ class TestBioHumanIk(BioHumanIk):
         self.mapping.append(self.humans[0].GetJoint("TorsoX").GetDOFIndex())
         self.mapping.append(self.humans[0].GetJoint("TorsoZ").GetDOFIndex())
         self.mapping.append(self.humans[0].GetJoint("TorsoY").GetDOFIndex())
-        self.mapping.append(self.humans[0].GetJoint("rShoulderY1").GetDOFIndex())
-        self.mapping.append(self.humans[0].GetJoint("rShoulderX").GetDOFIndex())
-        self.mapping.append(self.humans[0].GetJoint("rShoulderY2").GetDOFIndex())
+        self.mapping.append(self.humans[0].GetJoint(
+            "rShoulderY1").GetDOFIndex())
+        self.mapping.append(self.humans[0].GetJoint(
+            "rShoulderX").GetDOFIndex())
+        self.mapping.append(self.humans[0].GetJoint(
+            "rShoulderY2").GetDOFIndex())
         self.mapping.append(self.humans[0].GetJoint("rElbowZ").GetDOFIndex())
         self.mapping.append(self.humans[0].GetJoint("rElbowX").GetDOFIndex())
         self.mapping.append(self.humans[0].GetJoint("rElbowY").GetDOFIndex())
@@ -80,15 +87,24 @@ class TestBioHumanIk(BioHumanIk):
         self.mapping.append(self.humans[0].GetJoint("rWristY").GetDOFIndex())
 
         if not self.rarm_only:
-            self.mapping.append(self.humans[0].GetJoint("lShoulderY1").GetDOFIndex())
-            self.mapping.append(self.humans[0].GetJoint("lShoulderX").GetDOFIndex())
-            self.mapping.append(self.humans[0].GetJoint("lShoulderY2").GetDOFIndex())
-            self.mapping.append(self.humans[0].GetJoint("lElbowZ").GetDOFIndex())
-            self.mapping.append(self.humans[0].GetJoint("lElbowX").GetDOFIndex())
-            self.mapping.append(self.humans[0].GetJoint("lElbowY").GetDOFIndex())
-            self.mapping.append(self.humans[0].GetJoint("lWristZ").GetDOFIndex())
-            self.mapping.append(self.humans[0].GetJoint("lWristX").GetDOFIndex())
-            self.mapping.append(self.humans[0].GetJoint("lWristY").GetDOFIndex())
+            self.mapping.append(self.humans[0].GetJoint(
+                "lShoulderY1").GetDOFIndex())
+            self.mapping.append(self.humans[0].GetJoint(
+                "lShoulderX").GetDOFIndex())
+            self.mapping.append(self.humans[0].GetJoint(
+                "lShoulderY2").GetDOFIndex())
+            self.mapping.append(
+                self.humans[0].GetJoint("lElbowZ").GetDOFIndex())
+            self.mapping.append(
+                self.humans[0].GetJoint("lElbowX").GetDOFIndex())
+            self.mapping.append(
+                self.humans[0].GetJoint("lElbowY").GetDOFIndex())
+            self.mapping.append(
+                self.humans[0].GetJoint("lWristZ").GetDOFIndex())
+            self.mapping.append(
+                self.humans[0].GetJoint("lWristX").GetDOFIndex())
+            self.mapping.append(
+                self.humans[0].GetJoint("lWristY").GetDOFIndex())
             self.compute_left_arm = True
 
     def change_color_human(self):
@@ -98,11 +114,14 @@ class TestBioHumanIk(BioHumanIk):
 
         links = []
         for jIdx, j in enumerate(self.humans[1].GetJoints()):
-            # print "%s, \t%.3f, \t%.3f" % (j.GetName(), j.GetLimits()[0], j.GetLimits()[1])
+            # print "%s, \t%.3f, \t%.3f" % (j.GetName(), j.GetLimits()[0],
+            # j.GetLimits()[1])
             l = j.GetFirstAttached()
-            if l is not None : links.append(l)
+            if l is not None:
+                links.append(l)
             l = j.GetSecondAttached()
-            if l is not None : links.append(l)
+            if l is not None:
+                links.append(l)
 
         for l in links:
             for g in l.GetGeometries():
@@ -165,20 +184,30 @@ class TestBioHumanIk(BioHumanIk):
         # self.human.SetDOFValues([-self.offset_torso[0]], [9])
         # self.human.SetDOFValues([self.offset_torso[1]], [10])
         # self.human.SetDOFValues([-self.offset_torso[2]], [11])
-        human.SetDOFValues([r_offset_torso[0]], [human.GetJoint("rShoulderTransX").GetDOFIndex()])
-        human.SetDOFValues([r_offset_torso[1]], [human.GetJoint("rShoulderTransY").GetDOFIndex()])
-        human.SetDOFValues([r_offset_torso[2]], [human.GetJoint("rShoulderTransZ").GetDOFIndex()])
-        human.SetDOFValues([r_offset_shoulder_elbow], [human.GetJoint("rArmTrans").GetDOFIndex()])
-        human.SetDOFValues([r_offset_elbow_wrist], [human.GetJoint("rForeArmTrans").GetDOFIndex()])
+        human.SetDOFValues([r_offset_torso[0]], [
+                           human.GetJoint("rShoulderTransX").GetDOFIndex()])
+        human.SetDOFValues([r_offset_torso[1]], [
+                           human.GetJoint("rShoulderTransY").GetDOFIndex()])
+        human.SetDOFValues([r_offset_torso[2]], [
+                           human.GetJoint("rShoulderTransZ").GetDOFIndex()])
+        human.SetDOFValues([r_offset_shoulder_elbow], [
+                           human.GetJoint("rArmTrans").GetDOFIndex()])
+        human.SetDOFValues([r_offset_elbow_wrist], [
+                           human.GetJoint("rForeArmTrans").GetDOFIndex()])
 
         # print r_offset_torso[1]
 
         if self.compute_left_arm:
-            human.SetDOFValues([l_offset_torso[0]], [human.GetJoint("lShoulderTransX").GetDOFIndex()])
-            human.SetDOFValues([l_offset_torso[1]], [human.GetJoint("lShoulderTransY").GetDOFIndex()])
-            human.SetDOFValues([l_offset_torso[2]], [human.GetJoint("lShoulderTransZ").GetDOFIndex()])
-            human.SetDOFValues([l_offset_shoulder_elbow], [human.GetJoint("lArmTrans").GetDOFIndex()])
-            human.SetDOFValues([l_offset_elbow_wrist], [human.GetJoint("lForeArmTrans").GetDOFIndex()])
+            human.SetDOFValues([l_offset_torso[0]], [
+                               human.GetJoint("lShoulderTransX").GetDOFIndex()])
+            human.SetDOFValues([l_offset_torso[1]], [
+                               human.GetJoint("lShoulderTransY").GetDOFIndex()])
+            human.SetDOFValues([l_offset_torso[2]], [
+                               human.GetJoint("lShoulderTransZ").GetDOFIndex()])
+            human.SetDOFValues([l_offset_shoulder_elbow], [
+                               human.GetJoint("lArmTrans").GetDOFIndex()])
+            human.SetDOFValues([l_offset_elbow_wrist], [
+                               human.GetJoint("lForeArmTrans").GetDOFIndex()])
 
         # Map the joint angles and set to radians
     def get_human_configuration(self, human, config):
@@ -195,14 +224,15 @@ class TestBioHumanIk(BioHumanIk):
     def compute_dist_to_points(self, human, markers, t_elbow):
 
         # Get joint centers
-        p_torso_origin = (markers[0] + markers[1])/2
+        p_torso_origin = (markers[0] + markers[1]) / 2
 
-        p_r_shoulder_center = array([markers[4][0], markers[4][1], markers[5][2]])
+        p_r_shoulder_center = array(
+            [markers[4][0], markers[4][1], markers[5][2]])
         if self.use_elbow_pads:
             p_r_elbow_center = array(transpose(t_elbow[:, 3]).tolist()[0][:3])
         else:
             p_r_elbow_center = array([0, 0, 0])
-        p_r_wrist_center = (markers[6] + markers[7])/2
+        p_r_wrist_center = (markers[6] + markers[7]) / 2
 
         # Get the points in the global frame
         # inv_pelvis = la.inv(t_pelvis)
@@ -216,16 +246,21 @@ class TestBioHumanIk(BioHumanIk):
 
         if self.compute_left_arm:
 
-            p_l_shoulder_center = array([markers[11][0], markers[11][1], markers[12][2]])
+            p_l_shoulder_center = array(
+                [markers[11][0], markers[11][1], markers[12][2]])
             if self.use_elbow_pads:
-                p_l_elbow_center = array(transpose(t_elbow[:, 3]).tolist()[0][:3])
+                p_l_elbow_center = array(
+                    transpose(t_elbow[:, 3]).tolist()[0][:3])
             else:
                 p_l_elbow_center = array([0, 0, 0])
-            p_l_wrist_center = (markers[13] + markers[14])/2
+            p_l_wrist_center = (markers[13] + markers[14]) / 2
 
-            p1l = array(array(inv_pelvis).dot(append(p_l_shoulder_center, 1)))[0:3]
-            p2l = array(array(inv_pelvis).dot(append(p_l_elbow_center, 1)))[0:3]
-            p3l = array(array(inv_pelvis).dot(append(p_l_wrist_center, 1)))[0:3]
+            p1l = array(array(inv_pelvis).dot(
+                append(p_l_shoulder_center, 1)))[0:3]
+            p2l = array(array(inv_pelvis).dot(
+                append(p_l_elbow_center, 1)))[0:3]
+            p3l = array(array(inv_pelvis).dot(
+                append(p_l_wrist_center, 1)))[0:3]
 
         dist = 0.0
 
@@ -241,25 +276,28 @@ class TestBioHumanIk(BioHumanIk):
                 if print_dist:
                     print "p_link : ", p_link
                     print "dist torso : ", dist
-                self.handles.append(self.env.plot3(p_link, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
+                self.handles.append(self.env.plot3(
+                    p_link, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
                 # l = self.human.GetLink("TorsoDummyY")
                 # self.handles.append(misc.DrawAxes(self.env, j.GetHierarchyChildLink().GetTransform(), 1.0))
-
 
             if j.GetName() == "rShoulderX":
                 # self.handles.append(self.env.plot3(p_link, pointsize=0.05, colors=array([0, 0, 0]), drawstyle=1))
                 dist = la.norm(p_link - p1r)
                 if print_dist:
                     print "dist shoulder : ", dist
-                self.handles.append(self.env.plot3(p_link, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
+                self.handles.append(self.env.plot3(
+                    p_link, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
             if j.GetName() == "rElbowZ":
                 dist = la.norm(p_link - p2r)
                 if print_dist:
                     print "dist elbow : ", dist
-                self.handles.append(self.env.plot3(p_link, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
+                self.handles.append(self.env.plot3(
+                    p_link, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
             if j.GetName() == "rWristX":
                 dist = la.norm(p_link - p3r)
-                self.handles.append(self.env.plot3(p_link, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
+                self.handles.append(self.env.plot3(
+                    p_link, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
                 if print_dist:
                     print "dist wrist : ", dist
 
@@ -270,19 +308,22 @@ class TestBioHumanIk(BioHumanIk):
                     dist = la.norm(p_link - p1l)
                     if print_dist:
                         print "dist shoulder : ", dist
-                    self.handles.append(self.env.plot3(p_link, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
+                    self.handles.append(self.env.plot3(
+                        p_link, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
                 if j.GetName() == "lElbowZ":
                     dist = la.norm(p_link - p2l)
                     if print_dist:
                         print "dist elbow : ", dist
-                    self.handles.append(self.env.plot3(p_link, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
+                    self.handles.append(self.env.plot3(
+                        p_link, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
                 if j.GetName() == "lWristX":
                     dist = la.norm(p_link - p3l)
-                    self.handles.append(self.env.plot3(p_link, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
+                    self.handles.append(self.env.plot3(
+                        p_link, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
                     if print_dist:
                         print "dist wrist : ", dist
 
-            #if j.GetName() == "rShoulderZ":
+            # if j.GetName() == "rShoulderZ":
             #    self.handles.append(misc.DrawAxes(self.env, j.GetHierarchyChildLink().GetTransform(), 0.3))
 
         # for j in self.human.GetJoints():
@@ -305,7 +346,9 @@ class TestBioHumanIk(BioHumanIk):
         # self.handles.append(misc.DrawAxes(self.env, eye(4), 2))
         # self.handles.append(misc.DrawAxes(self.env, self.t_pelvis, 2))
 
-        # print "joint : ", self.human.GetJoint("zTorsoTrans").GetHierarchyChildLink().GetTransform()[0:3, 3]
+        # print "joint : ",
+        # self.human.GetJoint("zTorsoTrans").GetHierarchyChildLink().GetTransform()[0:3,
+        # 3]
 
         self.handles.append(misc.DrawAxes(self.env, self.trunkEr, .2))
         self.handles.append(misc.DrawAxes(self.env, self.UAEr, .2))
@@ -385,27 +428,34 @@ class TestBioHumanIk(BioHumanIk):
             for o in humans[j].objects:
                 transforms.append(o.get_transform())
 
-            t_pelvis = transforms[0] * MakeTransform(rodrigues([0, 0, pi]), matrix([0, 0, 0]))
-            t_head   = transforms[1]
+            t_pelvis = transforms[
+                0] * MakeTransform(rodrigues([0, 0, pi]), matrix([0, 0, 0]))
+            t_head = transforms[1]
 
             if self.use_elbow_pads:
-                t_elbow  = transforms[2]
-                t_elbow  = t_elbow * MakeTransform(rodrigues([0, 0, -pi/2]), matrix([0, 0, 0]))
-                t_elbow  = t_elbow * MakeTransform(rodrigues([0, pi/2, 0]), matrix([0, 0, 0]))
+                t_elbow = transforms[2]
+                t_elbow = t_elbow * \
+                    MakeTransform(
+                        rodrigues([0, 0, -pi / 2]), matrix([0, 0, 0]))
+                t_elbow = t_elbow * \
+                    MakeTransform(rodrigues([0, pi / 2, 0]), matrix([0, 0, 0]))
             else:
                 t_elbow = array(eye(4))
 
             # self.handles.append(misc.DrawAxes(self.env, t_elbow, .2))
 
-            trunk_center = (markers[0] + markers[1])/2
+            trunk_center = (markers[0] + markers[1]) / 2
             inv_pelvis = la.inv(t_pelvis)
-            trunk_center = array(array(inv_pelvis).dot(append(trunk_center, 1)))[0:3]
+            trunk_center = array(array(inv_pelvis).dot(
+                append(trunk_center, 1)))[0:3]
 
-            markers_in_pelvis = self.get_markers_in_pelvis_frame(markers, t_pelvis)
+            markers_in_pelvis = self.get_markers_in_pelvis_frame(
+                markers, t_pelvis)
 
             if not self.compute_left_arm:
                 [config, d_r_torso, d_r_shoulder_elbow, d_r_elbow_wrist] = \
-                    self.compute_ik(markers_in_pelvis, la.inv(self.t_trans) * t_elbow)
+                    self.compute_ik(markers_in_pelvis,
+                                    la.inv(self.t_trans) * t_elbow)
                 d_l_torso = 0
                 d_l_shoulder_elbow = 0
                 d_l_elbow_wrist = 0
@@ -485,29 +535,37 @@ class TestBioHumanIk(BioHumanIk):
                 for o in humans[j].objects:
                     transforms.append(o.get_transform())
 
-                t_pelvis = transforms[0] * MakeTransform(rodrigues([0, 0, pi]), matrix([0, 0, 0]))
-                t_head   = transforms[1]
+                t_pelvis = transforms[
+                    0] * MakeTransform(rodrigues([0, 0, pi]), matrix([0, 0, 0]))
+                t_head = transforms[1]
 
                 if self.use_elbow_pads:
-                    t_elbow  = transforms[2]
-                    t_elbow  = t_elbow * MakeTransform(rodrigues([0, 0, -pi/2]), matrix([0, 0, 0]))
-                    t_elbow  = t_elbow * MakeTransform(rodrigues([0, pi/2, 0]), matrix([0, 0, 0]))
+                    t_elbow = transforms[2]
+                    t_elbow = t_elbow * \
+                        MakeTransform(
+                            rodrigues([0, 0, -pi / 2]), matrix([0, 0, 0]))
+                    t_elbow = t_elbow * \
+                        MakeTransform(
+                            rodrigues([0, pi / 2, 0]), matrix([0, 0, 0]))
                 else:
                     t_elbow = array(eye(4))
 
                 # self.handles.append(misc.DrawAxes(self.env, t_elbow, .2))
 
-                trunk_center = (markers[0] + markers[1])/2
+                trunk_center = (markers[0] + markers[1]) / 2
                 inv_pelvis = la.inv(t_pelvis)
-                trunk_center = array(array(inv_pelvis).dot(append(trunk_center, 1)))[0:3]
+                trunk_center = array(array(inv_pelvis).dot(
+                    append(trunk_center, 1)))[0:3]
 
                 self.handles.append(misc.DrawAxes(self.env, t_pelvis, .3))
 
-                markers_in_pelvis = self.get_markers_in_pelvis_frame(markers, t_pelvis)
+                markers_in_pelvis = self.get_markers_in_pelvis_frame(
+                    markers, t_pelvis)
 
                 if not self.compute_left_arm:
                     [config, d_r_torso, d_r_shoulder_elbow, d_r_elbow_wrist] = \
-                        self.compute_ik(markers_in_pelvis, la.inv(self.t_trans) * t_elbow)
+                        self.compute_ik(markers_in_pelvis,
+                                        la.inv(self.t_trans) * t_elbow)
                     d_l_torso = 0
                     d_l_shoulder_elbow = 0
                     d_l_elbow_wrist = 0
@@ -546,7 +604,7 @@ class TestBioHumanIk(BioHumanIk):
             #     print "press enter to continue"
             #     sys.stdin.readline()
 
-            #for h in self.humans:
+            # for h in self.humans:
             #    print "robot in collision ", h.CheckSelfCollision()
 
     def run(self):
@@ -631,9 +689,9 @@ if __name__ == "__main__":
     name = '[0444-0585]'
     #name = '[1064-1140]'
     #name = '[1342-1451]'
-    #name = '[1882-1981]' # regrasp
+    # name = '[1882-1981]' # regrasp
     #name = '[2172-2249]'
-    #name = '[2646-2737]' # second human too noisy
+    # name = '[2646-2737]' # second human too noisy
 
     # Folder 4
     #folder_num = '4'
@@ -646,8 +704,8 @@ if __name__ == "__main__":
 
     # Folder 6
     #folder_num = '6'
-    #name = '[0408-0491]' # Perfect!!!
-    #name = '[0889-0945]' # too short
+    # name = '[0408-0491]' # Perfect!!!
+    # name = '[0889-0945]' # too short
     #name = '[1188-1256]'
 
     # Folder 7
@@ -655,7 +713,7 @@ if __name__ == "__main__":
 
     # Folder 6
     folder_num = '8'
-    name = '[0629-0768]' # Replan
+    name = '[0629-0768]'  # Replan
 
     folder = data_folder + 'ten_runs/trials/' + folder_num + '/'
     m_file = folder + name + 'markers.csv'
@@ -688,4 +746,3 @@ if __name__ == "__main__":
         test.save_file(name)
         print "press enter to exit"
         sys.stdin.readline()
-

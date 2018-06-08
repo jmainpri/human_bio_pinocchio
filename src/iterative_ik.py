@@ -17,15 +17,16 @@
 #
 #                                           Jim Mainprice on Monday May 5 2018
 import numpy as np
-from numpy.linalg import pinv,norm
+from numpy.linalg import pinv, norm
 
 
 def normalize(v):
-    v_norm=norm(v)
-    if v_norm==0:
+    v_norm = norm(v)
+    if v_norm == 0:
         # print "norm is 0"
-        v_norm=np.finfo(v.dtype).eps
-    return v/v_norm
+        v_norm = np.finfo(v.dtype).eps
+    return v / v_norm
+
 
 class IterativeIK:
     """ 
@@ -33,36 +34,36 @@ class IterativeIK:
         for a general manipulator, it relies on the foward kinematics
         function as well as the Jacobian.
     """
+
     def __init__(self,
-        dist_fct, 
-        jacobian_fct,
-        forward_kinematics_fct, 
-        active_dofs=None,
-        lower_limits=[],
-        upper_limits=[]):
+                 dist_fct,
+                 jacobian_fct,
+                 forward_kinematics_fct,
+                 active_dofs=None,
+                 lower_limits=[],
+                 upper_limits=[]):
 
         self.verbose = True
         self.debug = False
         self.q_full = None
         self.configurations = []
-        
+
         self.__dist_fct = dist_fct
         self.__jacobian_fct = jacobian_fct
         self.__forward_kinematics_fct = forward_kinematics_fct
         self.__active_dofs = active_dofs
         self.__lower_limits = lower_limits
         self.__upper_limits = upper_limits
-        
+
         self.__check_joint_limits = (
-            len(self.__lower_limits)>0 and 
-            len(self.__upper_limits)>0 )
+            len(self.__lower_limits) > 0 and
+            len(self.__upper_limits) > 0)
 
         self.__sigmoid_joint_limits = None
         self.__magnitude = 0.01
         self.__max_nb_iterations = 3000
         self.__max_distance_to_target = 0.01
         self.__conservative_joint_limit_threshold = 1e-5
-        
 
     def interpolated_configurations(self):
         return self.configurations_
@@ -117,29 +118,28 @@ class IterativeIK:
         theshold = self.__conservative_joint_limit_threshold
         bad_joint_indices = []
         for idx in range(len(self.__active_dofs)):
-            if( q[idx] < (self.__lower_limits[idx] + theshold) or 
-                q[idx] > (self.__upper_limits[idx] - theshold)):
+            if(q[idx] < (self.__lower_limits[idx] + theshold) or
+                    q[idx] > (self.__upper_limits[idx] - theshold)):
                 # note this will never add the same joint
                 # twice, even if bClearBadJoints = false
                 bad_joint_indices.append(idx)
                 violate_limit = True
 
-                if self.verbose: 
+                if self.verbose:
                     # cout << "does not respect joint limits : "
                     #     << active_joints_[i]->getName();
                     print "ith joint : ", idx
                     print " , lower limit : ", self.__lower_limits[idx]
                     print " , upper limit : ", self.__upper_limits[idx]
-                    print " , q_j : ", q[idx] 
+                    print " , q_j : ", q[idx]
 
         return violate_limit
-
 
     def single_step(self, q, dist):
         """
         Solve for the velocities by computing
         the pseudo inverse of the Jacobian matrix.
-        
+
         We compute the jacobian and apply it directly.
         The jacobian J = dx/dq is the first order derivative of 
         FK : C -> X, where C is the configuration space, and X is the 
@@ -155,12 +155,12 @@ class IterativeIK:
         # print "J : "
         # print J
         assert q.shape[0] == len(self.__active_dofs)
-        #assert x_des.shape[0] == x_pose.shape[0]  # size of task space
+        # assert x_des.shape[0] == x_pose.shape[0]  # size of task space
         assert 6 == J.shape[0]       # size of task space
-        assert q.shape[0]     == J.shape[1]       # size of config space 
+        assert q.shape[0] == J.shape[1]       # size of config space
 
         # J = np.eye(J.shape[0], J.shape[1])
-        J_plus = np.matrix(pinv(J[0:3,:], rcond=1e-8))
+        J_plus = np.matrix(pinv(J[0:3, :], rcond=1e-8))
         # J_plus = np.matrix(J).transpose()
         if self.debug:
             print "J"

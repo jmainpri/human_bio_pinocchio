@@ -41,24 +41,26 @@ def human_urdf_path():
         print "human_bio.urdf not found !!!"
         return str("")
 
+
 def human_config_data():
     """
     Loads data from config file
     """
-    with open(os.path.dirname(os.path.realpath(__file__)) +  os.sep + 
-        "../config/human_urdf.yaml", 'r') as stream:
+    with open(os.path.dirname(os.path.realpath(__file__)) + os.sep +
+              "../config/human_urdf.yaml", 'r') as stream:
         try:
             data = yaml.load(stream)
         except yaml.YAMLError as exc:
             print(exc)
     return data
 
+
 def mocap_config_data():
     """
     Loads motion capture config data
     """
-    with open(os.path.dirname(os.path.realpath(__file__)) +  os.sep + 
-        "../config/mocap.yaml", 'r') as stream:
+    with open(os.path.dirname(os.path.realpath(__file__)) + os.sep +
+              "../config/mocap.yaml", 'r') as stream:
         try:
             data = yaml.load(stream)
         except yaml.YAMLError as exc:

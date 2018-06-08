@@ -17,8 +17,8 @@
 #
 #                                           Jim Mainprice on Monday May 5 2018
 from pinocchio.utils import *
-from pinocchio.explog import exp,log
-from numpy.linalg import pinv,norm
+from pinocchio.explog import exp, log
+from numpy.linalg import pinv, norm
 import pinocchio as se3
 import utils
 
@@ -32,13 +32,13 @@ print "wrist_name : ", wrist_name
 print "wrist_index : ", wrist_index
 
 for i in range(20):
-    q_rand=rand(q.shape)
+    q_rand = rand(q.shape)
     human.forwardKinematics(q_rand)
     J = human.jacobian(q_rand, wrist_index)
     print "Jacobian shape : ", J.shape
     np.set_printoptions(
-        suppress=True, 
-        formatter={'float_kind':'{:5.2f}'.format}, 
+        suppress=True,
+        formatter={'float_kind': '{:5.2f}'.format},
         linewidth=100000)
     print J[:, 23:37]
 

@@ -29,27 +29,28 @@ class HumanMocapSemantics:
         Configurable interface for mocap data frames.
         Gives a semantic interpratation of the marker data in a frame.
     """
+
     def __init__(self):
         self.__load_config()
 
     def __load_config(self):
-        
+
         self.__config = utils.mocap_config_data()
 
         labels = self.__config['labels']
-        self.r_shoulder     = lambda frame : frame[labels['rShoulder']]
-        self.r_elbow        = lambda frame : frame[labels['rElbow']]
-        self.r_wrist        = lambda frame : frame[labels['rWrist']]
-        self.l_shoulder     = lambda frame : frame[labels['lShoulder']]
-        self.l_elbow        = lambda frame : frame[labels['lElbow']]
-        self.l_wrist        = lambda frame : frame[labels['lWrist']]
-        self.pelvis         = lambda frame : frame[labels['Pelvis']]
-        self.torso          = lambda frame : frame[labels['Torso']]
+        self.r_shoulder = lambda frame: frame[labels['rShoulder']]
+        self.r_elbow = lambda frame: frame[labels['rElbow']]
+        self.r_wrist = lambda frame: frame[labels['rWrist']]
+        self.l_shoulder = lambda frame: frame[labels['lShoulder']]
+        self.l_elbow = lambda frame: frame[labels['lElbow']]
+        self.l_wrist = lambda frame: frame[labels['lWrist']]
+        self.pelvis = lambda frame: frame[labels['Pelvis']]
+        self.torso = lambda frame: frame[labels['Torso']]
 
         self.right_arm_joints = (
-            lambda f : [f[_] for _ in self.__config['right_arm_joints']])
+            lambda f: [f[_] for _ in self.__config['right_arm_joints']])
         self.left_arm_joints = (
-            lambda f : [f[_] for _ in self.__config['left_arm_joints']])
+            lambda f: [f[_] for _ in self.__config['left_arm_joints']])
 
     def transform(self, frame, label):
         return frame[self.__config['labels'][label]]
@@ -59,6 +60,7 @@ class HumanMocapData:
     """
        Loads mocap data and labels it.
     """
+
     def __init__(self, filename):
         self.__load_data(filename)
         self.semantics = HumanMocapSemantics()

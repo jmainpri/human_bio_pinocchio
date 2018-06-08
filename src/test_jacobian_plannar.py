@@ -25,11 +25,12 @@ from pinocchio_ik import *
 from iterative_ik import *
 import os
 
+
 class TestPlanarIterativeIk(PinocchioIterativeIk):
 
     def __init__(self):
         # active dofs indices
-        self.active_dofs=[0, 1]
+        self.active_dofs = [0, 1]
 
         PinocchioIterativeIk.__init__(
             self,
@@ -38,27 +39,27 @@ class TestPlanarIterativeIk(PinocchioIterativeIk):
             self.active_dofs)
 
 
-if __name__== "__main__":
+if __name__ == "__main__":
     test_iterative_ik = TestPlanarIterativeIk()
     data = test_iterative_ik.sample_configs()
-    iterative_ik=IterativeIK(
-            None,
-            test_iterative_ik.jacobian,
-            test_iterative_ik.forward_kinematics,
-            test_iterative_ik.active_dofs,
-            test_iterative_ik.lower_limits,
-            test_iterative_ik.upper_limits)
+    iterative_ik = IterativeIK(
+        None,
+        test_iterative_ik.jacobian,
+        test_iterative_ik.forward_kinematics,
+        test_iterative_ik.active_dofs,
+        test_iterative_ik.lower_limits,
+        test_iterative_ik.upper_limits)
     iterative_ik.q_full = np.copy(test_iterative_ik.robot.q0)
     iterative_ik.debug = False
 
     for i, config in enumerate(data):
-        # q = config[0] 
+        # q = config[0]
         q = zero(3)
         J = test_iterative_ik.robot.jacobian(
-                    q, 
-                    test_iterative_ik.wrist_index, 
-                    update_kinematics=True, 
-                    local_frame=False)
+            q,
+            test_iterative_ik.wrist_index,
+            update_kinematics=True,
+            local_frame=False)
         print "J local false"
         print J
 
@@ -70,5 +71,4 @@ if __name__== "__main__":
         print "J local true + rot"
         print J
 
-    print  "success : ", success
-
+    print "success : ", success

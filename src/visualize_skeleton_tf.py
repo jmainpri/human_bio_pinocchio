@@ -8,16 +8,17 @@ from sensor_msgs.msg import JointState
 
 
 def publish_transforms(br, frame):
-   """ 
-        all joint data is concatenated in one row 
-   """
-   for name, transform in frame.iteritems():
+    """ 
+         all joint data is concatenated in one row 
+    """
+    for name, transform in frame.iteritems():
         br.sendTransform(
             transform.translation,  # 3 fields position data
             transform.rotation,     # 4 fields orientation data
-            rospy.Time.now(), 
+            rospy.Time.now(),
             name,
             "base")
+
 
 def publish_joint_state(publisher, q):
     joint_state = JointState()
@@ -26,6 +27,7 @@ def publish_joint_state(publisher, q):
         joint_state.name.append(name)
         joint_state.position.append(value)
     publisher.publish(joint_state)
+
 
 def publish_hdf5_file(filename, with_joint_state):
     # setup rospy and broadcaster
@@ -54,15 +56,15 @@ if __name__ == '__main__':
 
     parser = optparse.OptionParser(
         description='Pulbish hdf5 file to ROS TF')
-    parser.add_option('-j', '--joint-state', 
-        action='store_true', 
-        default=False, 
-        dest='joint_state', 
-        help='whether to pubish joint state')
-    parser.add_option('-f', 
-        default="mocap_data_1526395234.hdf5", 
-        type="str", 
-        dest='filename',
-        help='Path to the file')
+    parser.add_option('-j', '--joint-state',
+                      action='store_true',
+                      default=False,
+                      dest='joint_state',
+                      help='whether to pubish joint state')
+    parser.add_option('-f',
+                      default="mocap_data_1526395234.hdf5",
+                      type="str",
+                      dest='filename',
+                      help='Path to the file')
     (options, args) = parser.parse_args()
     publish_hdf5_file(options.filename, options.joint_state)

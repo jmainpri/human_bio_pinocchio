@@ -17,8 +17,8 @@ class GenerateIkLib(TestBioHumanIk):
 
         TestBioHumanIk.__init__(self)
 
-        self.nb_humans      = 2
-        self.rarm_only      = True
+        self.nb_humans = 2
+        self.rarm_only = True
         self.use_elbow_pads = True
         self.compute_left_arm = False
         self.environment_file = "../../ormodels/humans_bio_env.xml"
@@ -30,12 +30,14 @@ def generate_ik_library(source_dir, target_dir):
 
     test = GenerateIkLib()
 
-    blocks = sorted([name for name in os.listdir(source_dir) if os.path.isdir(os.path.join(source_dir, name))])
+    blocks = sorted([name for name in os.listdir(source_dir)
+                     if os.path.isdir(os.path.join(source_dir, name))])
 
     for block in blocks:
 
         path = os.path.join(source_dir, block)
-        runs = sorted([name for name in os.listdir(path) if os.path.isdir(os.path.join(path, name))])
+        runs = sorted([name for name in os.listdir(path)
+                       if os.path.isdir(os.path.join(path, name))])
 
         for run in runs:
 
@@ -79,10 +81,10 @@ if __name__ == "__main__":
 
     if len(sys.argv) >= 4:
         for index in range(1, len(sys.argv)):
-            if sys.argv[index] == "-s" and index+1 < len(sys.argv):
-                source_dir = str(sys.argv[index+1])
-            if sys.argv[index] == "-t" and index+1 < len(sys.argv):
-                target_dir = str(sys.argv[index+1])
+            if sys.argv[index] == "-s" and index + 1 < len(sys.argv):
+                source_dir = str(sys.argv[index + 1])
+            if sys.argv[index] == "-t" and index + 1 < len(sys.argv):
+                target_dir = str(sys.argv[index + 1])
 
         generate_ik_library(source_dir, target_dir)
     else:
@@ -90,7 +92,6 @@ if __name__ == "__main__":
         print "******  WARNING  *******"
         print "************************"
         print "USAGE -> GenerateIkLibrary.py -s PATH_TO_SOURCE_LIBRARY -t PATH_TO_TARGET_LIBRARY"
-    
+
     print "try to load file : ", m_file
     print "try to load file : ", o_file
-

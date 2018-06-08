@@ -24,17 +24,18 @@ from pinocchio_ik import *
 from iterative_ik import *
 import os
 
+
 class TestHumanIterativeIk(PinocchioIterativeIk):
 
     def __init__(self):
 
-        urdf_path=utils.human_urdf_path()
-        self.robot=se3.RobotWrapper(urdf_path)
+        urdf_path = utils.human_urdf_path()
+        self.robot = se3.RobotWrapper(urdf_path)
 
-        data=utils.human_config_data()
+        data = utils.human_config_data()
 
         # active dofs indices
-        self.active_dofs=[
+        self.active_dofs = [
             self.index_config(name) for name in data["right_arm_dofs"]]
 
         PinocchioIterativeIk.__init__(
@@ -44,15 +45,14 @@ class TestHumanIterativeIk(PinocchioIterativeIk):
             self.active_dofs)
 
         # Setup default translations
-        q_default=np.zeros(self.robot.q0.shape)
+        q_default = np.zeros(self.robot.q0.shape)
         for name, value in data['right_arm_default'].iteritems():
             q_default[self.index_config(name)] = value
         self.robot.q0 = q_default
 
-if __name__== "__main__":
+if __name__ == "__main__":
     test_iterative_ik = TestHumanIterativeIk()
     data = test_iterative_ik.sample_configs()
     success = test_iterative_ik.run(data)
     test_iterative_ik.save_data_file(data)
-    print  "success : ", success
-
+    print "success : ", success

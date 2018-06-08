@@ -93,7 +93,8 @@ class BioHumanIk():
         self.human = self.env.GetRobots()[0]
 
         # Get pelvis torso offset and set human to position
-        self.offset_pelvis_torso_init = self.human.GetJoint("TorsoX").GetHierarchyChildLink().GetTransform()[0:3, 3]
+        self.offset_pelvis_torso_init = self.human.GetJoint(
+            "TorsoX").GetHierarchyChildLink().GetTransform()[0:3, 3]
 
         self.handles = []
 
@@ -118,11 +119,12 @@ class BioHumanIk():
 
         inv_torso = la.inv(self.t_pelvis)
 
-        points_3d = len(self.markers)*[array([0, 0, 0])]
+        points_3d = len(self.markers) * [array([0, 0, 0])]
 
         for i, p in enumerate(self.markers):
             print p
-            points_3d[i] = array(array(inv_torso).dot(array(append(p, 1.0))))[0:3]
+            points_3d[i] = array(array(inv_torso).dot(
+                array(append(p, 1.0))))[0:3]
 
         return points_3d
 
@@ -134,7 +136,8 @@ class BioHumanIk():
         # print "t_pelvis[3:7] ", t_pelvis[3:7]
         # print "t_pelvis[0:3] ", t_pelvis[0:3]
 
-        mat = MakeTransform(rotationMatrixFromQuat(array(t_pelvis[3:7])), matrix(t_pelvis[0:3]))
+        mat = MakeTransform(rotationMatrixFromQuat(
+            array(t_pelvis[3:7])), matrix(t_pelvis[0:3]))
 
         x_dir = array(transpose(mat[:, 0]).tolist()[0][:3])
         y_dir = array(transpose(mat[:, 1]).tolist()[0][:3])
@@ -165,10 +168,11 @@ class BioHumanIk():
         # the offset_pelvis_torso_init is hard coded and the human model
 
         xyphoid_t8 = self.markers[0] - self.markers[1]
-        trunk_center = self.markers[0] - 0.5*xyphoid_t8
+        trunk_center = self.markers[0] - 0.5 * xyphoid_t8
 
         inv_pelvis = la.inv(self.t_pelvis)
-        trunk_center = array(array(inv_pelvis).dot(append(trunk_center, 1)))[0:3]
+        trunk_center = array(array(inv_pelvis).dot(
+            append(trunk_center, 1)))[0:3]
 
         self.offset_pelvis_torso = trunk_center
         self.offset_pelvis_torso -= self.offset_pelvis_torso_init
@@ -177,13 +181,16 @@ class BioHumanIk():
 
     def set_model_size(self):
 
-        torso_origin = (self.markers[0] + self.markers[1])/2
-        p_shoulder_center = array([self.markers[4][0], self.markers[4][1], self.markers[5][2]])
-        p_elbow_center = (self.markers[6] + self.markers[7])/2
-        p_wrist_center = (self.markers[9] - self.markers[8])/2 + self.markers[8]
+        torso_origin = (self.markers[0] + self.markers[1]) / 2
+        p_shoulder_center = array(
+            [self.markers[4][0], self.markers[4][1], self.markers[5][2]])
+        p_elbow_center = (self.markers[6] + self.markers[7]) / 2
+        p_wrist_center = (self.markers[9] -
+                          self.markers[8]) / 2 + self.markers[8]
 
         self.offset_torso_shoulder = p_shoulder_center - torso_origin
-        self.offset_shoulder_elbow = la.norm(p_shoulder_center - p_elbow_center)
+        self.offset_shoulder_elbow = la.norm(
+            p_shoulder_center - p_elbow_center)
         self.offset_elbow_wrist = la.norm(p_wrist_center - p_elbow_center)
 
         # Get shoulder center in the torso frame
@@ -191,9 +198,9 @@ class BioHumanIk():
         # Then compute the torso frame
 
         xyphoid_t8 = self.markers[0] - self.markers[1]
-        trunk_center = self.markers[0] - 0.5*xyphoid_t8
+        trunk_center = self.markers[0] - 0.5 * xyphoid_t8
         c7_sternal = self.markers[2] - self.markers[3]
-        c7s_midpt = self.markers[3] + 0.5*c7_sternal
+        c7s_midpt = self.markers[3] + 0.5 * c7_sternal
 
         mat = MakeTransform(eye(3), matrix(trunk_center))
 
@@ -224,12 +231,14 @@ class BioHumanIk():
         # Get shoulder center in the torso frame
         self.t_torso = mat
         inv_torso = la.inv(self.t_torso)
-        offset_torso = array(array(inv_torso).dot(append(p_shoulder_center, 1)))[0:3]
+        offset_torso = array(array(inv_torso).dot(
+            append(p_shoulder_center, 1)))[0:3]
 
         # Place the human according the torso and pelvis frame
         # future notes: when placing the human according to the pelvis frame
         # the torso offset should be applied
-        self.human.SetTransform(array(MakeTransform(eye(3), matrix(self.offset_pelvis_torso))))
+        self.human.SetTransform(
+            array(MakeTransform(eye(3), matrix(self.offset_pelvis_torso))))
 
         # Set elbow size
         self.human.SetDOFValues([-offset_torso[0]], [9])
@@ -241,9 +250,11 @@ class BioHumanIk():
     def compute_dist_to_points(self, frame_id=0):
 
         # Get joint centers
-        p_shoulder_center = array([self.markers[4][0], self.markers[4][1], self.markers[5][2]])
-        p_elbow_center = (self.markers[6] + self.markers[7])/2
-        p_wrist_center = (self.markers[9] - self.markers[8])/2 + self.markers[8]
+        p_shoulder_center = array(
+            [self.markers[4][0], self.markers[4][1], self.markers[5][2]])
+        p_elbow_center = (self.markers[6] + self.markers[7]) / 2
+        p_wrist_center = (self.markers[9] -
+                          self.markers[8]) / 2 + self.markers[8]
 
         # Get the points in the global frame
         inv_pelvis = la.inv(self.t_pelvis)
@@ -268,14 +279,16 @@ class BioHumanIk():
                 dist = la.norm(p_link - p1)
                 print "dist shoulder : ", dist
             if j.GetName() == "rElbowZ":
-                self.handles.append(self.env.plot3(p_link, pointsize=0.02, colors=array([0, 0, 0]), drawstyle=1))
+                self.handles.append(self.env.plot3(
+                    p_link, pointsize=0.02, colors=array([0, 0, 0]), drawstyle=1))
                 dist = la.norm(p_link - p2)
                 print "dist elbow : ", dist
             if j.GetName() == "rWristX":
-                self.handles.append(self.env.plot3(p_link, pointsize=0.02, colors=array([0, 0, 0]), drawstyle=1))
+                self.handles.append(self.env.plot3(
+                    p_link, pointsize=0.02, colors=array([0, 0, 0]), drawstyle=1))
                 dist = la.norm(p_link - p3)
                 print "dist wrist : ", dist
-            #if j.GetName() == "rShoulderZ":
+            # if j.GetName() == "rShoulderZ":
             #    self.handles.append(misc.DrawAxes(self.env, j.GetHierarchyChildLink().GetTransform(), 0.3))
 
         # for j in self.human.GetJoints():
@@ -283,11 +296,15 @@ class BioHumanIk():
         #         t_link = j.GetHierarchyChildLink().GetTransform()
         #         self.handles.append(misc.DrawAxes(self.env, t_link, 0.3))
 
-        self.handles.append(self.env.plot3(p1, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
-        self.handles.append(self.env.plot3(p2, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
-        self.handles.append(self.env.plot3(p3, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
+        self.handles.append(self.env.plot3(
+            p1, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
+        self.handles.append(self.env.plot3(
+            p2, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
+        self.handles.append(self.env.plot3(
+            p3, pointsize=0.03, colors=array([0, 0, 1]), drawstyle=1))
 
-        self.handles.append(misc.DrawAxes(self.env, self.human.GetJoint("TorsoZ").GetHierarchyChildLink().GetTransform(), 1))
+        self.handles.append(misc.DrawAxes(self.env, self.human.GetJoint(
+            "TorsoZ").GetHierarchyChildLink().GetTransform(), 1))
         # self.handles.append(misc.DrawAxes(self.env, self.human.GetJoint("zTorsoTrans").GetHierarchyChildLink().GetTransform(), 1))
         # self.handles.append(misc.DrawAxes(self.env, self.human.GetJoint("rShoulderY").GetHierarchyChildLink().GetTransform(), 1))
         # self.handles.append(misc.DrawAxes(self.env, self.human.GetJoint("rElbowZ").GetHierarchyChildLink().GetTransform(), 1))
@@ -296,13 +313,15 @@ class BioHumanIk():
         # self.handles.append(misc.DrawAxes(self.env, self.t_pelvis, 2))
         # self.handles.append(misc.DrawAxes(self.env, eye(4), 2))
 
-        # print "joint : ", self.human.GetJoint("zTorsoTrans").GetHierarchyChildLink().GetTransform()[0:3, 3]
+        # print "joint : ",
+        # self.human.GetJoint("zTorsoTrans").GetHierarchyChildLink().GetTransform()[0:3,
+        # 3]
 
         return dist
 
-    def rtocarda( self, R, i, j, k):
+    def rtocarda(self, R, i, j, k):
 
-        #RTOCARDA (Spacelib): Rotation  matrix  to Cardan or Eulerian angles.
+        # RTOCARDA (Spacelib): Rotation  matrix  to Cardan or Eulerian angles.
         #
         # Extracts the Cardan (or Euler) angles from a rotation matrix.
         # The  parameters  i, j, k  specify   the   sequence   of  the rotation axes
@@ -317,9 +336,9 @@ class BioHumanIk():
         # Related functions : MTOCARDA
         #
         # (c) G.Legnani, C. Moiola 1998; adapted from: G.Legnani and R.Adamini 1993
-        #___________________________________________________________________________
+        #______________________________________________________________________
 
-        #spheader
+        # spheader
         #disp('got this far')
         # if ( i<X | i>Z | j<X | j>Z | k<X | k>Z | i==j | j==k )
         # 	error('Error in RTOCARDA: Illegal rotation axis ')
@@ -328,13 +347,13 @@ class BioHumanIk():
         a = array([0, 0, 0])
         b = array([0, 0, 0])
 
-        if (j-i+3) % 3 == 1:
+        if (j - i + 3) % 3 == 1:
             sig = 1  # ciclic
         else:
             sig = -1  # anti ciclic
 
         if i != k:  # Cardanic Convention
-            #disp('yes!')
+            # disp('yes!')
 
             i -= 1
             j -= 1
@@ -342,37 +361,37 @@ class BioHumanIk():
 
             R[j, k]
             R[k, k]
-            a[0] = atan2(-sig*R[j, k], R[k, k])
+            a[0] = atan2(-sig * R[j, k], R[k, k])
             R[i, k]
-            a[1] = asin(sig*R[i, k])
+            a[1] = asin(sig * R[i, k])
             R[i, j]
             R[i, i]
-            a[2] = atan2(-sig*R[i, j], R[i, i])
+            a[2] = atan2(-sig * R[i, j], R[i, i])
 
-            b[0] = atan2(sig*R[j, k], -R(k, k))
-            b[1] = ((pi-asin(sig*R[i, k]) + pi) % 2*pi)-pi
-            b[2] = atan2(sig*R[i, j], -R[i, i])
+            b[0] = atan2(sig * R[j, k], -R(k, k))
+            b[1] = ((pi - asin(sig * R[i, k]) + pi) % 2 * pi) - pi
+            b[2] = atan2(sig * R[i, j], -R[i, i])
 
         else:  # Euleriana Convention
 
-            l = 6-i-j
+            l = 6 - i - j
 
             i -= 1
             j -= 1
             k -= 1
             l -= 1
 
-            a[0] = atan2(R[j, i], -sig*R[l, i])
+            a[0] = atan2(R[j, i], -sig * R[l, i])
             a[1] = acos(R[i, i])
-            a[2] = atan2(R[i, j], sig*R[i, l])
+            a[2] = atan2(R[i, j], sig * R[i, l])
 
-            b[0] = atan2(-R[j, i], sig*R[l, i])
+            b[0] = atan2(-R[j, i], sig * R[l, i])
             b[1] = -acos(R[i, i])
-            b[2] = atan2(-R[i, j], -sig*R[i, l])
+            b[2] = atan2(-R[i, j], -sig * R[i, l])
 
         # report in degrees instead of radians
-        a = a * 180/pi
-        b = b * 180/pi
+        a = a * 180 / pi
+        b = b * 180 / pi
 
         return [a, b]
 
@@ -390,22 +409,22 @@ class BioHumanIk():
         # 9 -> 30-32 radial styloid
         # 10 -> 33-35 2nd metacarpal head
 
-        xyphoid_T8 = markers[0]-markers[1]
-        trunk_center = markers[0]-0.5*xyphoid_T8
-        C7_sternal = markers[2]-markers[3]
-        c7s_midpt = markers[3]+0.5*C7_sternal
-        trunkY = c7s_midpt-trunk_center
+        xyphoid_T8 = markers[0] - markers[1]
+        trunk_center = markers[0] - 0.5 * xyphoid_T8
+        C7_sternal = markers[2] - markers[3]
+        c7s_midpt = markers[3] + 0.5 * C7_sternal
+        trunkY = c7s_midpt - trunk_center
         trunkZ = cross(trunkY, xyphoid_T8)
         trunkX = cross(trunkY, trunkZ)
         gleno_center = [acromion[1], acromion[2], markers(20)]
         elb_axis = -markers[7] + markers[6]
-        elb_center = markers[7] + 0.5*elb_axis
-        UAY = gleno_center-elb_center
+        elb_center = markers[7] + 0.5 * elb_axis
+        UAY = gleno_center - elb_center
         wrist_axis = -markers[8] + markers[9]
-        wrist_center = markers[8] + 0.5*wrist_axis
+        wrist_center = markers[8] + 0.5 * wrist_axis
         UlnStylPro = markers[8] + 10 * wrist_axis / la.norm(wrist_axis)
-        LApY = elb_center-UlnStylPro
-        fixedz = markers(4)[2]-10  # 10 -> 1 cm
+        LApY = elb_center - UlnStylPro
+        fixedz = markers(4)[2] - 10  # 10 -> 1 cm
         acromion = [markers[4], fixedz]
 
         trunkY /= la.norm(trunkY)
@@ -416,7 +435,7 @@ class BioHumanIk():
         trunkE = matrix([trunkX, trunkY, trunkZ])
         trunk_origin = markers[1]
 
-        shoulderX = acromion-c7s_midpt
+        shoulderX = acromion - c7s_midpt
         shoulderZ = cross(shoulderX, trunkY)
         shoulderY = cross(shoulderZ, shoulderX)
         shoulderY /= la.norm(shoulderY)
@@ -444,7 +463,7 @@ class BioHumanIk():
         LAZ /= la.norm(LAZ)
         LAE = matrix([LAX, LAY, LAZ])
 
-        handY = wrist_center-markers[10]
+        handY = wrist_center - markers[10]
         handX = cross(handY, wrist_axis)
         handZ = cross(handX, handY)
         handY /= la.norm(handY)
@@ -454,7 +473,9 @@ class BioHumanIk():
 
         hand_origin = markers[10]
 
-        globalE = matrix([[-1, 0, 0], [0, 0, 1], [0, 1, 0]]); #this is simply a reflection of how our subjects were positioned relative to global
+        # this is simply a reflection of how our subjects were positioned
+        # relative to global
+        globalE = matrix([[-1, 0, 0], [0, 0, 1], [0, 1, 0]])
         # globalE=[1 0 0; 0 0 1; 0 -1 0]; # change for points defined in pelvis frame
         # globalE=[0 1 0; 0 0 1; 1 0 0]
         glob_inv = la.inv(globalE)
@@ -473,32 +494,31 @@ class BioHumanIk():
 
         [sh_a, sh_b] = self.rtocarda(UA_about_trunk, 2, 1, 2)
 
-        LA_about_UA = LAE*UAE_inv
+        LA_about_UA = LAE * UAE_inv
         LA_about_UA = self.normalize(LA_about_UA)
         [elb_a, elb_b] = self.rtocarda(LA_about_UA, 3, 1, 2)
 
         elbowdot = LAY.dot(UAY)
-        elb_a[1] = acos(elbowdot)*180/pi
+        elb_a[1] = acos(elbowdot) * 180 / pi
 
         # calculate euler angles for the wrist
         LA_inv = inv(LAE)
-        hand_about_LA = handE*LA_inv
+        hand_about_LA = handE * LA_inv
         hand_about_LA = normalize(hand_about_LA)
         [wrist_a, wrist_b] = self.rtocarda(hand_about_LA, 3, 1, 2)
 
         # wrist has problems with euler angle discontinuities.
         if wrist_a[1] <= -90:
-            wrist_a[1] = wrist_a[1]+180
-            wrist_a[3] = wrist_a[3]+180
+            wrist_a[1] = wrist_a[1] + 180
+            wrist_a[3] = wrist_a[3] + 180
 
         if wrist_a[1] >= 180:
-            wrist_a[1] = wrist_a(1)-180
-            wrist_a[3] = wrist_a(3)-180
+            wrist_a[1] = wrist_a(1) - 180
+            wrist_a[3] = wrist_a(3) - 180
 
         # wrist_a(1:2) = wrist_a(1:2)  #default wrist offset is 18.5
 
         return [time, tr_a, sh_a, elb_a[1], wrist_a]
-
 
     def draw_markers(self):
 
@@ -509,11 +529,12 @@ class BioHumanIk():
         colors = []
         nb_points = len(points)
         for n in linspace(0.0, 1.0, num=nb_points):
-            colors.append((float(n)*1, (1-float(n))*1, 0))
+            colors.append((float(n) * 1, (1 - float(n)) * 1, 0))
 
         points_3d = squeeze(points)
 
-        self.handles.append(self.env.plot3(points=points_3d, pointsize=0.02, colors=array(colors), drawstyle=1))
+        self.handles.append(self.env.plot3(
+            points=points_3d, pointsize=0.02, colors=array(colors), drawstyle=1))
 
         q_cur = self.get_human_configuration()
         self.human.SetDOFValues(q_cur[0:self.human.GetDOF()])
@@ -536,7 +557,8 @@ class BioHumanIk():
             # set by the pelvis frame, add rotation offset for matlab code
             t_trans = deepcopy(self.t_pelvis)
             t_trans[0:3, 3] = deepcopy(self.t_torso[0:3, 3])
-            t_trans = t_trans * MakeTransform(rodrigues([0, 0, pi]), matrix([0, 0, 0]))
+            t_trans = t_trans * \
+                MakeTransform(rodrigues([0, 0, pi]), matrix([0, 0, 0]))
 
             # inv_pelvis = la.inv(self.t_pelvis)
             # self.handles.append(misc.DrawAxes(self.env, inv_pelvis * t_trans, 2))
@@ -547,9 +569,9 @@ class BioHumanIk():
 
                 marker = array(array(t_trans).dot(append(marker, 1)))[0:3]
 
-                line_str += str(marker[0]*1000) + ','
-                line_str += str(marker[1]*1000) + ','
-                line_str += str(marker[2]*1000) + ','
+                line_str += str(marker[0] * 1000) + ','
+                line_str += str(marker[1] * 1000) + ','
+                line_str += str(marker[2] * 1000) + ','
 
             line_str = line_str.rstrip(',')
             line_str += '\n'
@@ -598,8 +620,9 @@ if __name__ == "__main__":
 
     for i in range(len(frames_m)):
 
-    # for i in range(raw_markers.shape[0]):
-        # markers = [raw_markers[i][n:n+3] for n in range(0, m, 3)]  # separate in 3d arrays
+        # for i in range(raw_markers.shape[0]):
+        # markers = [raw_markers[i][n:n+3] for n in range(0, m, 3)]  # separate
+        # in 3d arrays
 
         h.set_markers(frames_m[i][0:11])
         h.set_pelvis_frame(frames_o[i][0][0:7])

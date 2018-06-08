@@ -15,8 +15,8 @@ class TestTwoArmIk(TestBioHumanIk):
 
         TestBioHumanIk.__init__(self, name)
 
-        self.nb_humans      = 1
-        self.rarm_only      = False
+        self.nb_humans = 1
+        self.rarm_only = False
         self.use_elbow_pads = False
         self.compute_left_arm = True
         self.environment_file = "../../ormodels/humans_env_two_arms.xml"
@@ -43,4 +43,3 @@ if __name__ == "__main__":
         test.save_file(name)
         print "press enter to exit"
         sys.stdin.readline()
-
